@@ -3,7 +3,8 @@ from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 from django_countries.fields import CountryField
-
+from decimal import Decimal
+from django.conf import settings
 
 
 # Create your models here.
@@ -55,6 +56,8 @@ class Product(models.Model):
 #         return f"OrderAddress: {self.firstname} {self.lastname}, {self.city}, {self.country}"
 # """
 
+
+
 #! Order Üyeliksiz Satın Alım 
 
 class OrderWithoutMembership(models.Model):
@@ -66,8 +69,6 @@ class OrderWithoutMembership(models.Model):
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
     is_active = models.BooleanField(default=True)
 
 
@@ -75,4 +76,6 @@ class OrderWithoutMembership(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"OrderWithoutMembership: {self.product.title}, {self.firstname} {self.lastname}, {self.city}, {self.country} "
+        return f"OrderWithoutMembership: {self.firstname} {self.lastname}, {self.city}, {self.country} "
+
+

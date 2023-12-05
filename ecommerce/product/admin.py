@@ -21,9 +21,9 @@ class ProductAdmin(admin.ModelAdmin):
     
 
 class OrderWithoutMembershipAdmin(admin.ModelAdmin):
-    list_display = ("id","firstname","lastname","product","country","city","quantity","is_active",)
-    list_editable = ("quantity",)
-    search_fields = ("product","city","country","phone_number")
+    list_display = ("id","firstname","lastname","country","city","is_active",)
+    
+    search_fields = ("city","country","phone_number")
     
     
 
