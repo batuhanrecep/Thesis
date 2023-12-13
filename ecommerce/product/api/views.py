@@ -11,23 +11,30 @@ product_detail_view = ProductDetailAPIView.as_view()
 #//------------------------------------------------------------------------------------
 
 #! GetAll
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+product_list_view = ProductListAPIView.as_view()
+
+#//------------------------------------------------------------------------------------
+#! Post
+class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def perform_create(self, serializer):
         print(serializer.validated_data)
         title = serializer.validated_data.get('title')
-        description = serializer.validated_data.get('description')\
-        or None
+        description = serializer.validated_data.get('description') or None
         if description is None:
             description = title
         serializer.save(description=description)
-
-product_list_create_view = ProductListCreateAPIView.as_view()
+    
+product_create_view = ProductCreateAPIView.as_view()
 
 #//------------------------------------------------------------------------------------
-
 #! Destroy/Delete
 class ProductDestroyAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
@@ -52,13 +59,3 @@ product_update_view = ProductUpdateAPIView.as_view()
 
 #//------------------------------------------------------------------------------------
 
-#! GetAll
-class ProductListAPIView(generics.ListAPIView):
-
-    #! Bunu kullanmıyor
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-product_list_view = ProductListAPIView.as_view()
-
-#//------------------------------------------------------------------------------------
