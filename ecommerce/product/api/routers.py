@@ -3,4 +3,4 @@ from rest_framework.routers import DefaultRouter
 from .viewsets import  CategoryViewSet
 
 category_router = DefaultRouter()
-category_router.register(r'', CategoryViewSet, basename='category')
+category_router.register(r'all', CategoryViewSet, basename='category')
