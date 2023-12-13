@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, OrderWithoutMembership
+from .models import Product, Category
 from django.utils.safestring import mark_safe
 
 
@@ -20,18 +20,12 @@ class ProductAdmin(admin.ModelAdmin):
         return mark_safe(html)
     
 
-class OrderWithoutMembershipAdmin(admin.ModelAdmin):
-    list_display = ("id","firstname","lastname","country","city","is_active",)
-    
-    search_fields = ("city","country","phone_number")
-    
-    
 
     
     
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category)
-admin.site.register(OrderWithoutMembership, OrderWithoutMembershipAdmin)
+
 
 
