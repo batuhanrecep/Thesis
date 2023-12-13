@@ -1,12 +1,13 @@
 from rest_framework.routers import DefaultRouter
-from product.api.urls import category_router, product_router
+from product.api.routers import category_router
 from django.urls import path, include
 
 router = DefaultRouter()
 
-router.registry.extend(product_router.registry)
 router.registry.extend(category_router.registry)
 
+#localhost/api/...
 urlpatterns = [
-    path('',include(router.urls))
+    path('categories/', include(router.urls)),
+    path('', include('product.api.urls')),
 ]
