@@ -1,22 +1,16 @@
 from pyexpat import model
 from rest_framework.serializers import ModelSerializer
-from ..models import Product, Category, OrderWithoutMembership
+from ..models import Product, Category
 
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'title', 'image', 'price', 'stock', 'description', 'is_active', 'is_home', 'slug', 'categories')
+        fields = ('id', 'title', 'image', 'stock', 'description', 'is_active', 'is_home', 'slug', 'categories','regular_price', 'discount_price','updated_at','created_at')
 
 
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ('id','name','slug')        
-
-
-class OrderWithoutMembershipSerializer(ModelSerializer):
-    class Meta:
-        model = OrderWithoutMembership
-        fields = ('firstname','lastname','phone_number','zip_code', 'city', 'country', 'street', 'state','is_active')
 
 

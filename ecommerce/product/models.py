@@ -23,15 +23,30 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(verbose_name=("title"), help_text=("Required"), max_length=255)
     image = models.ImageField(upload_to="productpic")
-    price = models.PositiveIntegerField()
     stock = models.PositiveIntegerField()
     description = RichTextField()
     is_active = models.BooleanField(default=False)
     is_home = models.BooleanField(default=False)
     slug = models.SlugField(null=False, blank=True, unique=True, db_index=True, editable=False)
     categories = models.ManyToManyField(Category, blank=True)
+    created_at = models.DateTimeField(("Created at"), auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(("Updated at"), auto_now=True)
+    discount_price = models.DecimalField(verbose_name=("Discount price"),help_text=("Maximum 999.99"),max_digits=5,decimal_places=2,
+        error_messages={
+            "name": {
+                "max_length": ("The price must be between 0 and 999.99."),
+            },
+        },
+    )
+    regular_price = models.DecimalField(verbose_name=("Regular price"),help_text=("Maximum 999.99"),max_digits=5,decimal_places=2,
+        error_messages={
+            "name": {
+                "max_length":("The price must be between 0 and 999.99."),
+            },
+        },
+    )
 
     def __str__(self):
         return f"{self.title}"
@@ -39,43 +54,4 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
-
-#! 
-# """
-# class OrderAddress(models.Model):
-#     firstname = models.CharField(max_length=50) 
-#     lastname = models.CharField(max_length=50)
-#     phone_number = models.CharField(max_length=15)  
-#     zip_code = models.CharField(max_length=10)
-#     country = CountryField()
-#     city = models.CharField(max_length=50)
-#     street = models.CharField(max_length=255, blank=True, null=True)
-#     state = models.CharField(max_length=50, blank=True, null=True)
-
-#     def __str__(self):
-#         return f"OrderAddress: {self.firstname} {self.lastname}, {self.city}, {self.country}"
-# """
-
-
-
-#! Order Üyeliksiz Satın Alım 
-
-class OrderWithoutMembership(models.Model):
-    firstname = models.CharField(max_length=50) 
-    lastname = models.CharField(max_length=50)
-    phone_number = models.CharField(max_length=15)  
-    zip_code = models.CharField(max_length=10)
-    country = CountryField()
-    city = models.CharField(max_length=50)
-    street = models.CharField(max_length=255, blank=True, null=True)
-    state = models.CharField(max_length=50, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"OrderWithoutMembership: {self.firstname} {self.lastname}, {self.city}, {self.country} "
-
 
