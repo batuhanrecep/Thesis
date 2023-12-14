@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 from django_countries.fields import CountryField
-from decimal import Decimal
 from django.conf import settings
 
 
