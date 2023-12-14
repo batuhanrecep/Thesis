@@ -10,5 +10,5 @@ urlpatterns = [
  
 ]
 router = DefaultRouter()
-router.register('cart-items', BasketItemViewSet, basename='basket-items')
+router.register('items/', BasketItemViewSet, basename='basket-items')
 urlpatterns += router.urls
