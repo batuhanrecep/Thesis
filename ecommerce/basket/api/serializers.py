@@ -21,7 +21,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'title', 'slug', 'unit_price', 'inventory', 'image']
+        fields = ['id', 'title', 'slug', 'regular_price', 'stock', 'image']
 
 class BasketItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,7 +44,7 @@ class WriteBasketItemSerializer(serializers.ModelSerializer):
         return product_id
 
     def update(self, basket_item, validated_data):
-        if validated_data['quantity'] > basket_item.product.inventory:
+        if validated_data['quantity'] > basket_item.product.stock:
             raise QuantityError()
         return super().update(basket_item, validated_data)
 
@@ -64,7 +64,7 @@ class WriteBasketItemSerializer(serializers.ModelSerializer):
         except BasketItem.DoesNotExist:
             basket_item = BasketItem(basket=basket, **self.validated_data)
 
-        if basket_item.quantity > basket_item.product.inventory:
+        if basket_item.quantity > basket_item.product.stock:
             raise QuantityError()
 
         basket_item.save()

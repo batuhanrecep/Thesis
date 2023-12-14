@@ -55,3 +55,9 @@ class Product(models.Model):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    @property
+    def image(self):
+        images = self.images.all()
+        if images.count() == 0:
+            return None
+        return images.first()

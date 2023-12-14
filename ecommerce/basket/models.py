@@ -20,4 +20,4 @@ class BasketItem(models.Model):
 
     @property
     def total_price(self):
-        return self.quantity * self.product.unit_price
+        return self.quantity * self.product.regular_price
