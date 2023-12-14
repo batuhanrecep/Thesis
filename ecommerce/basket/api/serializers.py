@@ -9,7 +9,7 @@ from product.api.serializers import ProductSerializer
 
 class QuantityError(APIException):
     status_code = status.HTTP_409_CONFLICT
-    default_detail = "Quantity is more than the product's inventory"
+    default_detail = "Quantity is more than the product's stock"
 
 
 class BasketItemSerializer(ModelSerializer):
