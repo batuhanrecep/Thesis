@@ -24,7 +24,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     title = models.CharField(verbose_name=("title"), help_text=("Required"), max_length=255)
-    image = models.ImageField(upload_to="productpic")
+    image = models.ImageField(upload_to="productpic", null=True, blank=True)
     stock = models.PositiveIntegerField()
     description = RichTextField()
     is_active = models.BooleanField(default=False)
@@ -55,9 +55,5 @@ class Product(models.Model):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    @property
-    def image(self):
-        images = self.images.all()
-        if images.count() == 0:
-            return None
-        return images.first()
+ 
+    

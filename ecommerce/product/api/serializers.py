@@ -11,6 +11,4 @@ class ProductSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id','name','slug')        
-
-
+        fields = ('id','name','slug')   

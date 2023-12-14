@@ -57,5 +57,4 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
 
 product_update_view = ProductUpdateAPIView.as_view()
 
-#//------------------------------------------------------------------------------------
-
+#//-------------------------------------------------------------------------------------

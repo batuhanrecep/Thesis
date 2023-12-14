@@ -1,37 +1,26 @@
 from pyexpat import model
 from rest_framework.serializers import ModelSerializer
-from ..models import Basket, BasketItem
+from ..models import  BasketItem
 from product.models import Product
 from rest_framework.exceptions import APIException
 from rest_framework import status
 from rest_framework import serializers
+from product.api.serializers import ProductSerializer
 
 class QuantityError(APIException):
     status_code = status.HTTP_409_CONFLICT
     default_detail = "Quantity is more than the product's inventory"
 
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ['id', 'image']
 
-
-class SimpleProductSerializer(serializers.ModelSerializer):
-    image = ProductImageSerializer(read_only=True)
-
-    class Meta:
-        model = Product
-        fields = ['id', 'title', 'slug', 'regular_price', 'stock', 'image']
-
-class BasketItemSerializer(serializers.ModelSerializer):
+class BasketItemSerializer(ModelSerializer):
     class Meta:
         model = BasketItem
         fields = ['id', 'product', 'quantity', 'total_price']
 
-    product = SimpleProductSerializer(read_only=True)
+    product = ProductSerializer(read_only=True)
 
 
-class WriteBasketItemSerializer(serializers.ModelSerializer):
+class WriteBasketItemSerializer(ModelSerializer):
     class Meta:
         model = BasketItem
         fields = ['id', 'product_id', 'quantity']
