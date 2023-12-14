@@ -4,9 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from ecommerce.authentication.models import Customer
+from authentication.models import Customer
 
-from .serializers import CreateUserSerializer, CustomerSerializer, UserSerializer, UpdateCustomerSerializer, CreateUserCustomerSerializer, CreateCustomerSerializer
+from .serializers import CreateUserSerializer, CustomerSerializer, UpdateCustomerSerializer, CreateUserCustomerSerializer, CreateCustomerSerializer
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -34,9 +34,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [Permission]
+    #permission_classes = [Permission]
 
-    @action(detail=False, methods=["GET", "PUT"], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=["GET", "PUT"]) #, permission_classes=[permissions.IsAuthenticated] #! İçerisindeydi 
     def me(self, request):
         user = request.user
         customer = get_object_or_404(Customer, user_id=user.id)
@@ -71,7 +71,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         
 
 class CreateUserCustomer(generics.CreateAPIView):
-    permission_classes = [permissions.AllowAny]
+    #permission_classes = [permissions.AllowAny]
     serializer_class = CreateUserCustomerSerializer
     queryset = Customer.objects.all()
 
