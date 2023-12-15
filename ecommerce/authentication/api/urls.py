@@ -14,7 +14,6 @@ urlpatterns = [
     path('delete', DeleteAccountView.as_view()),
     path('csrf_cookie', GetCSRFToken.as_view())
     
-
 ]
 
 
