@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_countries',
     'basket',
+    'auth',
+    'authorization',
 ]
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
