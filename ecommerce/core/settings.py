@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_countries',
     'basket',
-    'auth',
     'authorization',
 ]
 
