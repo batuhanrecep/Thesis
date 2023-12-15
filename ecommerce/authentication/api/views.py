@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from rest_framework import permissions
+from rest_framework import permissions, generics
 from django.contrib import auth
 from rest_framework.response import Response
 #!from user_profile.models import UserProfile
@@ -8,7 +8,9 @@ from .serializers import UserSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 
-class CheckAuthenticatedView(APIView):
+
+
+class CheckAuthenticatedAPIView(generics.ListAPIView):
     def get(self, request, format=None):
         user = self.request.user
 
@@ -21,17 +23,26 @@ class CheckAuthenticatedView(APIView):
                 return Response({ 'isAuthenticated': 'error' })
         except:
             return Response({ 'error': 'Something went wrong when checking authentication status' })
+        
+check_authenticated_view = CheckAuthenticatedAPIView.as_view()
+
+#//---------------------------------------------------------------------------------------------------
 
 @method_decorator(csrf_protect, name='dispatch')
-class SignupView(APIView):
+class RegisterAPIView(generics.CreateAPIView):
+    serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny, )
+    
+    
 
-    def post(self, request, format=None):
-        data = self.request.data
+    def create(self, request, format=None):
+        data = request.data
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
 
         username = data['username']
         password = data['password']
-        re_password  = data['re_password']
+        re_password = data.get('re_password')
 
         try:
             if password == re_password:
@@ -53,8 +64,12 @@ class SignupView(APIView):
         except:
                 return Response({ 'error': 'Something went wrong when registering account' })
 
+register_view = RegisterAPIView.as_view()
+
+#//---------------------------------------------------------------------------------------------------
+
 @method_decorator(csrf_protect, name='dispatch')
-class LoginView(APIView):
+class LoginAPIView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request, format=None):
@@ -73,14 +88,22 @@ class LoginView(APIView):
                 return Response({ 'error': 'Error Authenticating' })
         except:
             return Response({ 'error': 'Something went wrong when logging in' })
+        
+login_view = LoginAPIView.as_view()
 
-class LogoutView(APIView):
+#//---------------------------------------------------------------------------------------------------
+
+class LogoutAPIView(generics.CreateAPIView):
     def post(self, request, format=None):
         try:
             auth.logout(request)
             return Response({ 'success': 'Loggout Out' })
         except:
             return Response({ 'error': 'Something went wrong when logging out' })
+    
+logout_view = LogoutAPIView.as_view()
+
+#//---------------------------------------------------------------------------------------------------
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
@@ -88,8 +111,12 @@ class GetCSRFToken(APIView):
 
     def get(self, request, format=None):
         return Response({ 'success': 'CSRF cookie set' })
+    
+get_csrf_token_view = GetCSRFToken.as_view()
 
-class DeleteAccountView(APIView):
+#//---------------------------------------------------------------------------------------------------
+
+class DeleteAccountAPIView(generics.DestroyAPIView):
     def delete(self, request, format=None):
         user = self.request.user
 
@@ -99,3 +126,5 @@ class DeleteAccountView(APIView):
             return Response({ 'success': 'User deleted successfully' })
         except:
             return Response({ 'error': 'Something went wrong when trying to delete user' })
+        
+delete_account_view = DeleteAccountAPIView.as_view()
