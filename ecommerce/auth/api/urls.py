@@ -1,0 +1,9 @@
+
+
+
+
+
+
+#localhost/api/auth/...
+urlpatterns = [
+]
