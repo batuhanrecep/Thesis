@@ -54,5 +54,9 @@ class Product(models.Model):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
- 
+    def category_name(self):
+        try:
+            return list(self.categories.values_list('name', flat=True))
+        except AttributeError:
+            return None
     
