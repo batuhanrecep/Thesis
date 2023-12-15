@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from ..models import Basket, BasketItem
 from .serializers import WriteBasketItemSerializer, BasketItemSerializer
-from authentication.models import Customer
+from authorization.models import Customer
 from rest_framework import viewsets, permissions
 from rest_framework.generics import get_object_or_404
 
