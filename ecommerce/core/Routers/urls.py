@@ -12,5 +12,5 @@ urlpatterns = [
     path('', include('product.api.urls')),
     path('basket/', include('basket.api.urls')),
     path('auth/', include('authentication.api.urls')),
-    path('authorization/', include('authorization.api.urls')),
+
 ]
