@@ -4,8 +4,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
 from django.contrib.auth.models import Permission, Group
 
-
-
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         if not email:
@@ -28,7 +26,6 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True')
         return self.create_user(email, password, **kwargs)
 
-
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
@@ -36,8 +33,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-
-    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -70,12 +65,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name='user_permissions_set',  # Added related_name
         related_query_name='user',
     )
-
+    
 class Customer(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=255)
-    address = models.TextField()
-
+    phone = models.CharField(max_length=20)
     # noinspection PyUnresolvedReferences
     def __str__(self):
         return self.user.email
+    
+
+
+
+

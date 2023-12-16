@@ -5,33 +5,14 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from authorization.models import Customer
 from .serializers import CreateUserSerializer, CustomerSerializer, UpdateCustomerSerializer, CreateUserCustomerSerializer, CreateCustomerSerializer
+from ..permissions import UnknownPermission
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    class Permission(permissions.IsAdminUser):
-        def has_permission(self, request, view):
-            # Give non-admin permission to create customer object if the user is authenticated
-            # and the object hasn't been created before.
-            if view.action == 'create' and request.user \
-                    and Customer.objects.filter(user=request.user.id).count() == 0:
-                return True
-
-            # Use implementation IsAdminUser if the action is `list`
-            if view.action == 'list':
-                return super().has_permission(request, view)
-
-            # else allow all other actions which are object level ones
-            # (handled by `has_object_permission`)
-            return True
-
-        def has_object_permission(self, request, view, customer):
-            # Only allow if it is their own customer instance
-            if request.user == customer.user:
-                return True
-            return False
-
+    
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [UnknownPermission]
     #permission_classes = [Permission]
 
     @action(detail=False, methods=["GET", "PUT"]) #, permission_classes=[permissions.IsAuthenticated] #! İçerisindeydi 
