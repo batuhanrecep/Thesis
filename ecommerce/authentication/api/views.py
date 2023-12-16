@@ -1,130 +1,113 @@
-from django.contrib.auth.models import User
-from rest_framework.views import APIView
-from rest_framework import permissions, generics
-from django.contrib import auth
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-#!from user_profile.models import UserProfile
-from .serializers import UserSerializer
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
+from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from ..models import Customer, Seller, UserAccount
+import requests
+from .serializers import UserAccountSerializer, CustomerSerializer, SellerSerializer
 
-
-
-class CheckAuthenticatedAPIView(generics.ListAPIView):
-    def get(self, request, format=None):
-        user = self.request.user
-
+@api_view(['POST'])
+def customer_register(request):
+    """
+    Registers a customer by email and password.
+    """
+    if request.method == 'POST':
         try:
-            isAuthenticated = user.is_authenticated
+            # Deserialize data.
+            serializer = CustomerSerializer(data=request.data)
 
-            if isAuthenticated:
-                return Response({ 'isAuthenticated': 'success' })
+            try:
+                # Check if the user with the same email already exists.
+                existing_user = UserAccount.objects.get(email=request.data.get('email'))
+                return Response({'error': 'User with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+            except ObjectDoesNotExist:
+                # User does not exist, continue with registration
+                pass  
+
+            if serializer.is_valid():
+                # Save user
+                user = serializer.save()
+                return Response({'user': user.email, 'type': user.type}, status=status.HTTP_201_CREATED)
             else:
-                return Response({ 'isAuthenticated': 'error' })
-        except:
-            return Response({ 'error': 'Something went wrong when checking authentication status' })
-        
-check_authenticated_view = CheckAuthenticatedAPIView.as_view()
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            print(e)
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#//---------------------------------------------------------------------------------------------------
-
-@method_decorator(csrf_protect, name='dispatch')
-class RegisterAPIView(generics.CreateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny, )
-    
-    
-
-    def create(self, request, format=None):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
-        username = data['username']
-        password = data['password']
-        re_password = data.get('re_password')
-
+@api_view(['POST'])
+def seller_register(request):
+    """
+    Registers a seller by email and password.
+    """
+    if request.method == 'POST':
         try:
-            if password == re_password:
-                if User.objects.filter(username=username).exists():
-                    return Response({ 'error': 'Username already exists' })
-                else:
-                    if len(password) < 6:
-                        return Response({ 'error': 'Password must be at least 6 characters' })
-                    else:
-                        user = User.objects.create_user(username=username, password=password)
+            # Deserialize data.
+            serializer = SellerSerializer(data=request.data)
 
-                        user = User.objects.get(id=user.id)
+            try:
+                # Check if the user with the same email already exists.
+                existing_user = UserAccount.objects.get(email=request.data.get('email'))
+                return Response({'error': 'User with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+            except ObjectDoesNotExist:
+                # User does not exist, continue with registration
+                pass  
 
-                        #!user_profile = UserProfile.objects.create(user=user, first_name='', last_name='', phone='', city='')
-
-                        return Response({ 'success': 'User created successfully' })
+            if serializer.is_valid():
+                # Save user
+                user = serializer.save()
+                return Response({'user': user.email, 'type': user.type}, status=status.HTTP_201_CREATED)
             else:
-                return Response({ 'error': 'Passwords do not match' })
-        except:
-                return Response({ 'error': 'Something went wrong when registering account' })
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            print(e)
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-register_view = RegisterAPIView.as_view()
 
-#//---------------------------------------------------------------------------------------------------
 
-@method_decorator(csrf_protect, name='dispatch')
-class LoginAPIView(generics.ListAPIView):
-    permission_classes = (permissions.AllowAny, )
-
-    def post(self, request, format=None):
-        data = self.request.data
-
-        username = data['username']
-        password = data['password']
-
+@api_view(['POST'])
+def login(request):
+    """
+    Returns JWT if the email and password exist and match.
+    """
+    if request.method == 'POST':
         try:
-            user = auth.authenticate(username=username, password=password)
+            email = request.data.get('email')
+            password = request.data.get('password')
+
+            user = authenticate(email=email, password=password)
 
             if user is not None:
-                auth.login(request, user)
-                return Response({ 'success': 'User authenticated' })
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                return Response({'token': access_token, 'type': user.type}, status=status.HTTP_200_OK)
             else:
-                return Response({ 'error': 'Error Authenticating' })
-        except:
-            return Response({ 'error': 'Something went wrong when logging in' })
-        
-login_view = LoginAPIView.as_view()
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(e)
+            return Response({'error': 'Problem'}, status=status.HTTP_400_BAD_REQUEST)
 
-#//---------------------------------------------------------------------------------------------------
 
-class LogoutAPIView(generics.CreateAPIView):
-    def post(self, request, format=None):
-        try:
-            auth.logout(request)
-            return Response({ 'success': 'Loggout Out' })
-        except:
-            return Response({ 'error': 'Something went wrong when logging out' })
-    
-logout_view = LogoutAPIView.as_view()
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def breweries(request):
+    """
+    Sends request to the api.openbrewerydb if user is authenticated.
+    """
+    if request.method == 'GET':
+        query_param = request.GET.get('query')
+        if query_param:
+            url = f'https://api.openbrewerydb.org/breweries/search?query={query_param}'
+        else:
+            url = 'https://api.openbrewerydb.org/breweries'
 
-#//---------------------------------------------------------------------------------------------------
-
-@method_decorator(ensure_csrf_cookie, name='dispatch')
-class GetCSRFToken(APIView):
-    permission_classes = (permissions.AllowAny, )
-
-    def get(self, request, format=None):
-        return Response({ 'success': 'CSRF cookie set' })
-    
-get_csrf_token_view = GetCSRFToken.as_view()
-
-#//---------------------------------------------------------------------------------------------------
-
-class DeleteAccountAPIView(generics.DestroyAPIView):
-    def delete(self, request, format=None):
-        user = self.request.user
-
-        try:
-            User.objects.filter(id=user.id).delete()
-
-            return Response({ 'success': 'User deleted successfully' })
-        except:
-            return Response({ 'error': 'Something went wrong when trying to delete user' })
-        
-delete_account_view = DeleteAccountAPIView.as_view()
+        response = requests.get(url)
+        data = response.json()
+        return Response(data)

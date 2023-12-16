@@ -6,6 +6,8 @@ from .views import BasketItemViewSet
 
 
 #localhost/basket/...
+#http://127.0.0.1:8000/api/basket/
+#http://127.0.0.1:8000/api/basket/items/
 urlpatterns = [
  
 ]

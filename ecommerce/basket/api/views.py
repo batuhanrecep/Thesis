@@ -1,13 +1,13 @@
 from django.http import JsonResponse
 from ..models import Basket, BasketItem
 from .serializers import WriteBasketItemSerializer, BasketItemSerializer
-from authorization.models import Customer
+from authentication.models import UserAccount
 from rest_framework import viewsets, permissions
 from rest_framework.generics import get_object_or_404
 
 
 def get_basket_for_user(user):
-    customer = get_object_or_404(Customer, user=user)
+    customer = get_object_or_404(UserAccount, user=user)
     basket, _ = Basket.objects.get_or_create(customer=customer)
     return basket
 

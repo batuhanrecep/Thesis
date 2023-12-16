@@ -1,7 +1,15 @@
 from django.urls import path, include
 from . import views
 
+
+
 #localhost/api
+#http://127.0.0.1:8000/api/products/
+#http://127.0.0.1:8000/api/products/x/
+#http://127.0.0.1:8000/api/products/add/
+#http://127.0.0.1:8000/api/products/update/x/
+#http://127.0.0.1:8000/api/products/delete/x/
+
 urlpatterns = [
     path('products/', views.product_list_view),
     path('products/add/', views.product_create_view),

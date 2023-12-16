@@ -1,11 +1,11 @@
 from django.db import models
 from product.models import Product
-from authorization.models import Customer
+from authentication.models import UserAccount
 from django.core.validators import MinValueValidator
 
 
 class Basket(models.Model):
-    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    customer = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
 
 
 class BasketItem(models.Model):

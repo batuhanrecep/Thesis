@@ -1,9 +1,18 @@
 from django.contrib import admin
-#!from .models import User, Customer
+from .models import  Customer, CustomerManager, Seller, SellerManager, UserAccount
+from django.contrib.admin.models import LogEntry
+
 
 # Register your models here.
 
 
+admin.site.register(UserAccount)
+admin.site.register(Customer)
+admin.site.register(Seller)
+
+
+LogEntry._meta.get_field('user').remote_field.model = UserAccount
+LogEntry._meta.get_field('user').remote_field.related_model = UserAccount
 
 
 
@@ -14,23 +23,3 @@ from django.contrib import admin
 
 
 
-
-
-
-
-
-
-
-
-#!-------------------------------------------------------------------------------------
-# @admin.register(User)
-# class UserAdmin(admin.ModelAdmin):
-#     ordering = ['first_name']
-#     list_display = ["first_name", "last_name", "email"]
-
-# @admin.register(Customer)
-# class CustomerAdmin(admin.ModelAdmin):
-#     list_display = ['email']
-
-#     def email(self, customer):
-#         return customer.user.email
