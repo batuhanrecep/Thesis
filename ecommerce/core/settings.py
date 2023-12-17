@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "authentication.UserAccount"
+#AUTHENTICATION_BACKENDS = ['authentication.authentication.EmailBackend']
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
 
