@@ -15,10 +15,13 @@ class ProductSerializer(ModelSerializer):
     category_name=serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Product
-        fields = ('id', 'title', 'image', 'stock', 'description', 'is_active', 'is_home', 'slug', 'categories','regular_price', 'discount_price','updated_at','created_at','category_name')
+        fields = ('id', 'title', 'image', 'stock', 'description', 'is_slide', 'is_offer', 'is_featured',
+                  'slug', 'categories', 'regular_price', 'discount_percentage', 'updated_at', 'created_at',
+                  'category_name',)
     
     def get_category_name(self, obj):
         try:
             return list(obj.categories.values_list('name', flat=True))
         except AttributeError:
             return None
+        

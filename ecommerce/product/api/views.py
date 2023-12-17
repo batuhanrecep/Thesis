@@ -30,6 +30,8 @@ class ProductCreateAPIView(generics.CreateAPIView):
         description = serializer.validated_data.get('description') or None
         if description is None:
             description = title        
+
+
         serializer.save(description=description)
 
 product_create_view = ProductCreateAPIView.as_view()
