@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_countries',
     'basket',
+    'order',
 ]
 
 AUTH_USER_MODEL = "authentication.UserAccount"

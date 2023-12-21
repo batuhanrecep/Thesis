@@ -7,9 +7,9 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from ..models import Customer, Seller, UserAccount
+from ..models import UserAccount
 import requests
-from .serializers import UserAccountSerializer, CustomerSerializer, SellerSerializer
+from .serializers import CustomerSerializer, SellerSerializer
 
 @api_view(['POST'])
 def customer_register(request):
@@ -32,7 +32,7 @@ def customer_register(request):
             if serializer.is_valid():
                 # Save user
                 user = serializer.save()
-                return Response({'user': user.email, 'type': user.type}, status=status.HTTP_201_CREATED)
+                return Response({'user': user.email, 'firstname': user.firstname, 'lastname':user.lastname, 'type': user.type}, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
@@ -61,7 +61,7 @@ def seller_register(request):
             if serializer.is_valid():
                 # Save user
                 user = serializer.save()
-                return Response({'user': user.email, 'type': user.type}, status=status.HTTP_201_CREATED)
+                return Response({'user': user.email, 'firstname': user.firstname, 'lastname':user.lastname, 'type': user.type}, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
