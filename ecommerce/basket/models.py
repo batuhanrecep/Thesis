@@ -1,8 +1,9 @@
 from django.db import models
+#from ecommerce.authentication.api.serializers import User
 from product.models import Product
-from authentication.models import UserAccount
+from authentication.models import Customer, UserAccount
 from django.core.validators import MinValueValidator
-
+from django.conf import settings
 
 class Basket(models.Model):
     customer = models.OneToOneField(UserAccount, on_delete=models.CASCADE)

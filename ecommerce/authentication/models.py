@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import Permission
-
+from django.conf import settings
 
 class AppUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -43,7 +43,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     class Types(models.TextChoices):
         CUSTOMER = "CUSTOMER" , "customer"
         SELLER = "SELLER" , "seller"
-        
+    
     type = models.CharField(max_length = 8 , choices = Types.choices , default = Types.CUSTOMER)
     email = models.EmailField(max_length = 200 , unique = True)
     firstname = models.CharField(max_length=255)
@@ -133,9 +133,6 @@ class Customer(UserAccount):
             self.is_customer = True
         return super().save(*args , **kwargs)
 
-class CustomerProfile(models.Model):
-    user = models.OneToOneField(Customer, on_delete=models.CASCADE, primary_key=True)
-    deneme = models.CharField(max_length=8, blank=True, null=True)
 
 class SellerManager(models.Manager):
     
