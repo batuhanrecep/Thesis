@@ -1,6 +1,6 @@
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import RetrieveUpdateAPIView, UpdateAPIView, CreateAPIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -9,8 +9,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from ..models import UserAccount
 import requests
-from .serializers import CustomerSerializer, SellerSerializer
+from .serializers import CustomerSerializer, SellerSerializer, UpdateUserSerializer, GetUserSerializer, ChangePasswordSerializer
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import OutstandingToken, BlacklistedToken
 
+
+#! CUSTOMER REGISTER
 @api_view(['POST'])
 def customer_register(request):
     """
@@ -40,6 +44,9 @@ def customer_register(request):
             print(e)
             return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#! SELLER REGISTER
 @api_view(['POST'])
 def seller_register(request):
     """
@@ -69,8 +76,9 @@ def seller_register(request):
             print(e)
             return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+#! LOGIN
 @api_view(['POST'])
 def login(request):
     """
@@ -92,7 +100,57 @@ def login(request):
         except Exception as e:
             print(e)
             return Response({'error': 'Problem'}, status=status.HTTP_400_BAD_REQUEST)
+        
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+#! Get User or Update user
+class GetOrUpdateUserAPIView(RetrieveUpdateAPIView):
+    serializer_class = GetUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+get_or_update_user_view = GetOrUpdateUserAPIView.as_view()
+
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#! Update User Type 
+class BecomeSellerAPIView(UpdateAPIView):
+    serializer_class = UpdateUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+become_seller_view = BecomeSellerAPIView.as_view()
+
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#! Change Password 
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    if request.method == 'POST':
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = request.user
+
+            if not user.check_password(serializer.validated_data['old_password']):
+                return Response({'error': 'Invalid old password'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+
+            return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#!//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])

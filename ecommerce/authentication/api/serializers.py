@@ -38,3 +38,23 @@ class SellerSerializer(UserAccountSerializer):
         validated_data['type'] = UserAccount.Types.SELLER
         validated_data['is_seller'] = True
         return super().create(validated_data)
+    
+class GetUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ('email', 'firstname', 'lastname')
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ('type',)
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password_confirm = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password_confirm']:
+            raise serializers.ValidationError("New passwords do not match.")
+        return data
