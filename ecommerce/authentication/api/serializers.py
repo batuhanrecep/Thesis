@@ -39,6 +39,7 @@ class SellerSerializer(UserAccountSerializer):
         validated_data['is_seller'] = True
         return super().create(validated_data)
     
+
     
     
 class GetUserSerializer(serializers.ModelSerializer):
