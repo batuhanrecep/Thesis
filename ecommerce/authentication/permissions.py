@@ -7,7 +7,12 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
         return obj.user == request.user
     
+   
 class IsAddressOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        # Check if the user making the request is the owner of the object
         return obj.user == request.user
+
+
+class IsSellerOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and (request.user.is_seller or request.user.is_staff)

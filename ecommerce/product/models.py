@@ -6,6 +6,7 @@ from django_countries.fields import CountryField
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from decimal import Decimal
+from authentication.models import Seller, UserAccount
 # Create your models here.
 
 
@@ -22,6 +23,8 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    user = models.ForeignKey(Seller, on_delete=models.CASCADE,help_text=("Owner Of the Product"))
+
     title = models.CharField(verbose_name=("title"), help_text=("Required"), max_length=255)
     image = models.ImageField(upload_to="productpic", null=True, blank=True)
     stock = models.PositiveIntegerField(help_text=("Required"))
@@ -47,6 +50,10 @@ class Product(models.Model):
             },
         },  
     )
+
+    @property
+    def store_name(self):
+        return self.seller.store_name if self.seller else None
 
     def clean(self):
         # Validate that discount_percentage is not greater than 100
