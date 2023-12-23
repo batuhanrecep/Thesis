@@ -13,4 +13,5 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register('all', AddressViewSet, basename='all address')
+
 urlpatterns += router.urls

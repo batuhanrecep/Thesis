@@ -15,6 +15,7 @@ class AddressViewSet(ModelViewSet):
 
 
 
+
 # class AddressListView(generics.ListAPIView):
 #     serializer_class = AddressSerializer
 #     permission_classes = [permissions.IsAuthenticated, IsAddressOwner]

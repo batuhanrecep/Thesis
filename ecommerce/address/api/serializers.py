@@ -13,3 +13,4 @@ class AddressSerializer(serializers.ModelSerializer):
         address = Address(user=user, **validated_data)
         address.save()
         return address
+    
