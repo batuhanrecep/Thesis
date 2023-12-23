@@ -7,10 +7,12 @@ router = DefaultRouter()
 router.registry.extend(category_router.registry)
 
 #localhost/api/...
+
 urlpatterns = [
     path('categories/', include(router.urls)),
     path('', include('product.api.urls')),
     path('basket/', include('basket.api.urls')),
+    path('address/', include('address.api.urls')),
     path('auth/', include('authentication.api.urls')),
 
 ]
