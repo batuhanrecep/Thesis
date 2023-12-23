@@ -15,22 +15,22 @@ class AddressViewSet(ModelViewSet):
 
 
 
-class AddressListView(generics.ListAPIView):
-    serializer_class = AddressSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAddressOwner]
+# class AddressListView(generics.ListAPIView):
+#     serializer_class = AddressSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsAddressOwner]
 
-    def get_queryset(self):
-        # Retrieve addresses for the authenticated user
-        return Address.objects.filter(user=self.request.user)
+#     def get_queryset(self):
+#         # Retrieve addresses for the authenticated user
+#         return Address.objects.filter(user=self.request.user)
     
 
-#! Destroy/Delete
-class AddressDestroyAPIView(generics.DestroyAPIView):
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer
-    lookup_field = 'pk'
+# #! Destroy/Delete
+# class AddressDestroyAPIView(generics.DestroyAPIView):
+#     queryset = Address.objects.all()
+#     serializer_class = AddressSerializer
+#     lookup_field = 'pk'
     
-    def perform_destroy(self, instance):
+#     def perform_destroy(self, instance):
         
-        super().perform_destroy(instance)
+#         super().perform_destroy(instance)
       
