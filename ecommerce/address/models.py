@@ -20,7 +20,7 @@ class Address(models.Model):
     daire = models.CharField(max_length=50)
     semt = models.CharField(max_length=50)
     sehir = models.CharField(max_length=50)
-    country = CountryField(multiple=False)
+    #country = CountryField(multiple=False)
     post_code = models.CharField(max_length=10)
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=True)
