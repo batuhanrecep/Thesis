@@ -32,12 +32,14 @@ class CustomerSerializer(UserAccountSerializer):
 class SellerSerializer(UserAccountSerializer):
     class Meta(UserAccountSerializer.Meta):
         model = UserAccount
-        fields = UserAccountSerializer.Meta.fields + ('is_seller',)
+        fields = UserAccountSerializer.Meta.fields + ('is_seller','store_name') 
 
     def create(self, validated_data):
         validated_data['type'] = UserAccount.Types.SELLER
         validated_data['is_seller'] = True
         return super().create(validated_data)
+    
+    
     
 class GetUserSerializer(serializers.ModelSerializer):
     class Meta:

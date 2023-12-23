@@ -56,7 +56,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_customer = models.BooleanField(default = False)
     is_seller = models.BooleanField(default = False)
     
-
+    store_name = models.CharField(max_length=255, null=True)
 
     USERNAME_FIELD = "email"
     

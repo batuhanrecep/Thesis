@@ -68,7 +68,7 @@ def seller_register(request):
             if serializer.is_valid():
                 # Save user
                 user = serializer.save()
-                return Response({'user': user.email, 'firstname': user.firstname, 'lastname':user.lastname, 'type': user.type}, status=status.HTTP_201_CREATED)
+                return Response({'user': user.email, 'firstname': user.firstname, 'lastname':user.lastname,'store_Name':user.store_name, 'type': user.type }, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
