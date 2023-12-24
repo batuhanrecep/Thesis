@@ -15,34 +15,31 @@ class OrderCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         basket_items = BasketItem.objects.filter(basket__customer=user)
+        
+        order = serializer.save()
 
-        with transaction.atomic():
-            order = serializer.save()
+        order.basket_items.set(basket_items)
 
-            shipping_address = user.address_set.filter(address_type='S', default=True).first()
-            billing_address = user.address_set.filter(address_type='B', default=True).first()
+        shipping_address = user.address_set.filter(address_type='S', default=True).first()
+        billing_address = user.address_set.filter(address_type='B', default=True).first()
+        
+        if shipping_address:
+            order.shipping_address = shipping_address
+        if billing_address:
+            order.billing_address = billing_address
 
-            if shipping_address:
-                order.shipping_address = shipping_address
-            if billing_address:
-                order.billing_address = billing_address
+        order.save()
 
-            order.save()
-
-            # Create OrderDetails instances for each BasketItem
-            for basket_item in basket_items:
-                OrderDetails.objects.create(order=order, product=basket_item.product, quantity=basket_item.quantity)
-
-            # Clear the user's basket after order creation
-            user.basket.clear()
+        # Clear the user's basket after order creation
+        user.basket.clear()
 
         return order
 
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance)
-    #     # Include 'basket_items' in the response
-    #     data['basket_items'] = BasketItemSerializer(instance.basket_items.all(), many=True).data
-    #     return data
+
+class OrderDetailAPIView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderDetailsSerializer
+    #permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
 
 
@@ -55,12 +52,6 @@ class OrderListAPIView(generics.ListAPIView):
         return Order.objects.filter(customer=self.request.user)
 
 
-class OrderDetailAPIView(generics.RetrieveAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderDetailsSerializer
-    #permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-
-
 
 class OrderDetailsCreateAPIView(generics.CreateAPIView):
     queryset = OrderDetails.objects.all()
@@ -69,8 +60,4 @@ class OrderDetailsCreateAPIView(generics.CreateAPIView):
 
 
 
-class OrderDetailsCreateAPIView(generics.CreateAPIView):
-    queryset = OrderDetails.objects.all()
-    serializer_class = OrderDetailsSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
