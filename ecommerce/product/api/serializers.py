@@ -13,11 +13,11 @@ class CategorySerializer(ModelSerializer):
 
 class ProductSerializer(ModelSerializer):    
     category_name=serializers.SerializerMethodField(read_only=True)
-    store_name = serializers.ReadOnlyField(source='user.store_name')
+    store_name = serializers.ReadOnlyField(source='seller.store_name')
     class Meta:
         model = Product
         fields = '__all__'
-        read_only_fields = ('user',)
+        read_only_fields = ('seller',)
 
     def get_category_name(self, obj):
         try:
@@ -26,12 +26,12 @@ class ProductSerializer(ModelSerializer):
             return None
     
     def create(self, validated_data):
-        user = self.context['request'].user
-        product = Product(user=user, **validated_data)
+        seller = self.context['request'].user
+        product = Product(seller=seller, **validated_data)
         product.save()
         return product
         
     
     def perform_update(self, serializer):
-        user = self.context['request'].user
-        serializer.save(user=user)
+        seller = self.context['request'].user
+        serializer.save(seller=seller)

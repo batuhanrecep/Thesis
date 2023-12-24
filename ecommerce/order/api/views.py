@@ -31,10 +31,12 @@ class OrderCreateAPIView(generics.CreateAPIView):
         order.save()
 
         # Clear the user's basket after order creation
-        user.basket.clear()
+
 
         return order
 
+
+        #user.basket.clear()
 
 class OrderDetailAPIView(generics.RetrieveAPIView):
     queryset = Order.objects.all()

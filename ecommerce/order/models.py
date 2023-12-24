@@ -13,7 +13,7 @@ class Order(models.Model):
         ('D', 'Delivered'),
     )
 
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE, help_text="Customer who is ordering")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, help_text="Customer who is ordering")
     shipping_address = models.ForeignKey(Address, related_name='shipping_address', on_delete=models.SET_NULL, null=True)
     billing_address = models.ForeignKey(Address, related_name='billing_address', on_delete=models.SET_NULL, null=True)
     basket_items = models.ManyToManyField(BasketItem)
@@ -28,7 +28,7 @@ class Order(models.Model):
 
 class OrderDetails(models.Model):
     user2 = models.ForeignKey(Seller, on_delete=models.CASCADE, help_text="Seller's Order")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    #order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 

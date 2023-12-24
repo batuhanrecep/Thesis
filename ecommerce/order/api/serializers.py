@@ -17,15 +17,14 @@ class OrderSerializer(serializers.ModelSerializer):
     shipping_address = AddressSerializer(read_only=True)
     billing_address = AddressSerializer(read_only=True)
     basket_items = BasketItemSerializer(many=True, read_only=True)
-    order_items = OrderDetailsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
         fields = "__all__"
-        read_only_fields = ('user','shipping_address','billing_address', 'order_items')  # Make user field read-only during creation
+        read_only_fields = ('customer','shipping_address','billing_address', 'order_items')  # Make user field read-only during creation
 
     def create(self, validated_data):
-        user = self.context['request'].user
-        order = Order(user=user, **validated_data)
+        customer = self.context['request'].user
+        order = Order(customer=customer, **validated_data)
         order.save()
         return order

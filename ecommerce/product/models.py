@@ -23,7 +23,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    user = models.ForeignKey(Seller, on_delete=models.CASCADE,help_text=("Owner Of the Product"))
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE,help_text=("Owner Of the Product"))
 
     title = models.CharField(verbose_name=("title"), help_text=("Required"), max_length=255)
     image = models.ImageField(upload_to="productpic", null=True, blank=True)

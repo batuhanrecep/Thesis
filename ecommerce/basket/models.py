@@ -8,9 +8,9 @@ from django.conf import settings
 class Basket(models.Model):
     customer = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
 
-    def clear(self):
-        # Implement the logic to clear the basket
-        self.basketitem_set.all().delete()
+    # def clear(self):
+    #     # Implement the logic to clear the basket
+    #     self.basketitem_set.all().delete()
 
 class BasketItem(models.Model):
     class Meta:
