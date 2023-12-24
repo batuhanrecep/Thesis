@@ -2,9 +2,19 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from ..models import Product
 from .serializers import ProductSerializer
-from authentication.permissions import IsOwnerOrReadOnly, IsAddressOwner, IsSellerOrAdmin
+from authentication.permissions import IsOwnerOrReadOnly, IsOwner, IsSellerOrAdmin
 
+#! GetAll Products that belongs to Seller 
+class SellerProductListAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes =[IsSellerOrAdmin,permissions.IsAuthenticated,IsOwner]
 
+    def get_queryset(self):
+        # Retrieve addresses for the authenticated user
+        return Product.objects.filter(user=self.request.user)
+
+seller_product_list_view = SellerProductListAPIView.as_view()
 
 #! GetByID
 class ProductDetailAPIView(generics.RetrieveAPIView):
@@ -38,7 +48,7 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsAddressOwner]
+    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsOwner]
 
     def perform_destroy(self, instance):
         
@@ -53,7 +63,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsAddressOwner]
+    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsOwner]
 
 
 
