@@ -5,7 +5,7 @@ from product.models import Product
 from rest_framework.exceptions import APIException
 from rest_framework import status
 from rest_framework import serializers
-from product.api.serializers import ProductSerializer
+from product.api.serializers import ProductSerializer, BasicProductSerializer
 
 class QuantityError(APIException):
     status_code = status.HTTP_409_CONFLICT
@@ -59,3 +59,10 @@ class WriteBasketItemSerializer(ModelSerializer):
         basket_item.save()
         self.instance = basket_item
         return self.instance
+
+class BasicBasketItemSerializer(ModelSerializer):
+    class Meta:
+        model = BasketItem
+        fields = ['id', 'product', 'quantity', 'total_price']
+
+    product = BasicProductSerializer(read_only=True)

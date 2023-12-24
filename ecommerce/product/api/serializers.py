@@ -35,3 +35,11 @@ class ProductSerializer(ModelSerializer):
     def perform_update(self, serializer):
         seller = self.context['request'].user
         serializer.save(seller=seller)
+
+
+class BasicProductSerializer(ModelSerializer):    
+    store_name = serializers.ReadOnlyField(source='seller.store_name')
+    class Meta:
+        model = Product
+        fields = ('title','stock','id','store_name','seller','regular_price') 
+        read_only_fields = ('seller',)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from ..models import Order, OrderDetails
 from authentication.api.serializers import GetUserSerializer
 from address.api.serializers import AddressSerializer
-from basket.api.serializers import BasketItemSerializer
+from basket.api.serializers import BasketItemSerializer, BasicBasketItemSerializer
 
 
 
@@ -16,7 +16,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     shipping_address = AddressSerializer(read_only=True)
     billing_address = AddressSerializer(read_only=True)
-    basket_items = BasketItemSerializer(many=True, read_only=True)
+    basket_items = BasicBasketItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
