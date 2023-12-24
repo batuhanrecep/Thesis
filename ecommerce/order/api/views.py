@@ -17,17 +17,13 @@ class OrderCreateAPIView(generics.CreateAPIView):
         basket_items = BasketItem.objects.filter(basket__customer=user)
         
         order = serializer.save()
-
         order.basket_items.set(basket_items)
 
         shipping_address = user.address_set.filter(address_type='S', default=True).first()
         billing_address = user.address_set.filter(address_type='B', default=True).first()
         
-        if shipping_address:
-            order.shipping_address = shipping_address
-        if billing_address:
-            order.billing_address = billing_address
-
+        order.shipping_address = shipping_address
+        order.billing_address = billing_address
         order.save()
 
         # Clear the user's basket after order creation
