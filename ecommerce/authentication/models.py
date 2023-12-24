@@ -48,6 +48,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length = 200 , unique = True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
+    phone = models.CharField(max_length=15)
     is_active = models.BooleanField(default = True)
     is_admin = models.BooleanField(default = False)
     is_staff = models.BooleanField(default = False)
@@ -101,7 +102,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 class CustomerManager(models.Manager):
 
-    def create_user(self, email, firstname, lastname, password = None):
+    def create_user(self, email, firstname, phone, lastname, password = None):
         if not email or len(email) <= 0 : 
             raise  ValueError("Email field is required !")
         if not password :
@@ -110,7 +111,8 @@ class CustomerManager(models.Manager):
         user = self.model(
             email = email,
             firstname= firstname,
-            lastname = lastname
+            lastname = lastname,
+            phone = phone
         )
         user.set_password(password)
         user.save(using = self._db)
@@ -136,7 +138,7 @@ class Customer(UserAccount):
 
 class SellerManager(models.Manager):
     
-    def create_user(self, email, firstname, lastname, password = None):
+    def create_user(self, email, firstname, phone, lastname, password = None):
         if not email or len(email) <= 0 : 
             raise  ValueError("Email field is required !")
         if not password :
@@ -145,7 +147,8 @@ class SellerManager(models.Manager):
         user = self.model(
             email = email,
             firstname= firstname,
-            lastname = lastname
+            lastname = lastname,
+            phone = phone
         )
         user.set_password(password)
         user.save(using = self._db)

@@ -14,5 +14,6 @@ urlpatterns = [
     path('basket/', include('basket.api.urls')),
     path('address/', include('address.api.urls')),
     path('auth/', include('authentication.api.urls')),
+    path('order/', include('order.api.urls')),
 
 ]

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_countries',
     'basket',
     'address',
+    'order',
 ]
 
 AUTH_USER_MODEL = "authentication.UserAccount"

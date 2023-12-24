@@ -10,7 +10,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserAccount
-        fields = ('id', 'email', 'firstname', 'lastname', 'password', 'type')
+        fields = ('id', 'email', 'firstname', 'lastname', 'phone', 'password', 'type',)
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -45,7 +45,7 @@ class SellerSerializer(UserAccountSerializer):
 class GetUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
-        fields = ('email', 'firstname', 'lastname')
+        fields = ('email', 'firstname', 'lastname','phone')
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
