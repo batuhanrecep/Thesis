@@ -1,9 +1,8 @@
 from decimal import Decimal
-from pyexpat import model
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from ..models import Product, Category
-from rest_framework.response import Response
+
 
 
 

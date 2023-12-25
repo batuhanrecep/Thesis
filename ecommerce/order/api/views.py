@@ -1,14 +1,8 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
-from ..models import Order, OrderDetails, OrderedItems
-from .serializers import OrderSerializer, OrderDetailsSerializer
-from authentication.permissions import IsOwnerOrReadOnly
-from authentication.models import Customer
-from basket.models import BasketItem
-from address.models import Address
+from ..models import Order, OrderedItems
+from .serializers import OrderSerializer, SellerOrderSerializer
 from basket.api.views import get_basket_for_user
 from rest_framework.response import Response
-from basket.api.serializers import BasketItemSerializer
 from django.db import transaction
 
 class OrderCreateAPIView(generics.CreateAPIView):
@@ -47,7 +41,6 @@ class OrderCreateAPIView(generics.CreateAPIView):
                 product.stock -= basket_item.quantity
                 product.save()
 
-            # Bulk create the ordered items
             OrderedItems.objects.bulk_create(ordered_items, unique_fields=['order', 'product'])
 
             return Response(data={'order_id': order.id}, status=status.HTTP_201_CREATED)
@@ -58,33 +51,21 @@ class OrderListAPIView(generics.ListAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # def get_queryset(self):
-    #     customer = get_object_or_404(Customer, customer=self.request.user)
-    #     return Order.objects.filter(customer=customer).order_by('-id')
+
     def get_queryset(self):
-        # Retrieve addresses for the authenticated user
         return Order.objects.filter(customer=self.request.user).order_by('-id')
 
-
-class OrderDetailAPIView(generics.RetrieveAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderDetailsSerializer
-    #permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-
-
-
-
+class SellerOrderListAPIView(generics.ListAPIView):
+    serializer_class = SellerOrderSerializer
+    permission_classes = [permissions.IsAuthenticated ]
 
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user)
+        seller = self.request.user
+        queryset = Order.objects.filter(items__product__seller=seller).distinct()
+        return queryset
 
 
 
-class OrderDetailsCreateAPIView(generics.CreateAPIView):
-    queryset = OrderDetails.objects.all()
-    serializer_class = OrderDetailsSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-
-
+seller_order_list_view = SellerOrderListAPIView.as_view()
 
 

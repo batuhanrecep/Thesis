@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from ..models import Order, OrderDetails, OrderedItems
-from authentication.api.serializers import GetUserSerializer
+from ..models import Order, OrderedItems
 from address.api.serializers import AddressSerializer
-from basket.api.serializers import BasketItemSerializer, BasicBasketItemSerializer
 from product.api.serializers import BasicProductSerializer
+
+
 
 class OrderedItemsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,17 +13,11 @@ class OrderedItemsSerializer(serializers.ModelSerializer):
     product = BasicProductSerializer()
 
 
-class OrderDetailsSerializer(serializers.ModelSerializer):
-    product_title = serializers.ReadOnlyField(source='product.title')
-    class Meta:
-        model = OrderDetails
-        fields = "__all__"
-    
 class OrderSerializer(serializers.ModelSerializer):
     shipping_address = AddressSerializer(read_only=True)
     billing_address = AddressSerializer(read_only=True)
-    #basket_items = BasicBasketItemSerializer(many=True, read_only=True)
     items = OrderedItemsSerializer(many=True)
+    
     class Meta:
         model = Order
         fields = "__all__"
@@ -34,3 +28,24 @@ class OrderSerializer(serializers.ModelSerializer):
         order = Order(customer=customer, **validated_data)
         order.save()
         return order
+    
+class SellerOrderSerializer(serializers.ModelSerializer):
+    shipping_address = AddressSerializer(read_only=True)
+    billing_address = AddressSerializer(read_only=True)
+    items = OrderedItemsSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+        read_only_fields = ('customer', 'shipping_address', 'billing_address',)
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        seller = self.context['request'].user
+        filtered_items = representation['items']
+
+        # Filter items to include only those belonging to the seller
+        filtered_items = [item for item in filtered_items if item['product']['seller'] == seller.id]
+
+        representation['items'] = filtered_items
+        return representation

@@ -1,13 +1,10 @@
-from pyexpat import model
 from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
-from django_countries.fields import CountryField
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from decimal import Decimal
-from authentication.models import Seller, UserAccount
-# Create your models here.
+from authentication.models import Seller
+
 
 
 class Category(models.Model):

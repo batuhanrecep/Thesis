@@ -1,8 +1,7 @@
 from rest_framework import generics, permissions
-from rest_framework.response import Response
 from ..models import Product
 from .serializers import ProductSerializer
-from authentication.permissions import IsOwnerOrReadOnly, IsOwner, IsSellerOrAdmin,IsOwnerOrReadOnly2,IsOwner2
+from authentication.permissions import IsSellerOrAdmin,IsOwnerOrReadOnly2,IsOwner2
 
 #! GetAll Products that belongs to Seller 
 class SellerProductListAPIView(generics.ListAPIView):

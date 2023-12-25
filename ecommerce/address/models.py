@@ -2,7 +2,7 @@ from django.db import models
 from django_countries.fields import CountryField
 from authentication.models import UserAccount
 
-# Create your models here.
+
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),

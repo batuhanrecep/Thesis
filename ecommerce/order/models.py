@@ -1,7 +1,6 @@
 from django.db import models
-from authentication.models import Customer, Seller
+from authentication.models import Customer
 from address.models import Address
-from basket.models import BasketItem
 from product.models import Product
 from django.core.validators import MinValueValidator
 
@@ -33,8 +32,6 @@ class Order(models.Model):
         return f"Order {self.id}"
 
 
-    #basket_items = models.ManyToManyField(BasketItem)
-    #total_price = models.DecimalField(max_digits=10, decimal_places=2)
     # paymentmethod =
 
 class OrderedItems(models.Model):
@@ -57,16 +54,3 @@ class OrderedItems(models.Model):
         return self.quantity * self.regular_price
 
 
-
-class OrderDetails(models.Model):
-    user2 = models.ForeignKey(Seller, on_delete=models.CASCADE, help_text="Seller's Order")
-    #order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-
-    def __str__(self):
-        return f"OrderItem {self.id} - {self.product.title}"
-
-    @property
-    def quantity(self):
-        return self.basketitem.quantity if self.basketitem else None
