@@ -32,21 +32,21 @@ class ProductSerializer(ModelSerializer):
         product.save()
         return product
 
+    #Product modeldeki save methodunu kullanmamak için 
     def update(self, instance, validated_data):
-        # Update fields based on validated_data
         instance.title = validated_data.get('title', instance.title)
         instance.stock = validated_data.get('stock', instance.stock)
         instance.description = validated_data.get('description', instance.description)
         instance.regular_price = validated_data.get('regular_price', instance.regular_price)
         instance.discount_percentage = validated_data.get('discount_percentage', instance.discount_percentage)
+        instance.image = validated_data.get('image', instance.image)
+        categories = validated_data.get('categories', instance.categories.all())
+        instance.categories.set(categories)
 
-        # Calculate discount_price and update regular_price if discount_percentage is not zero
         discount_percentage_decimal = Decimal(instance.discount_percentage)
         instance.discount_price = instance.regular_price - (instance.regular_price * (discount_percentage_decimal / 100))
         if discount_percentage_decimal != 0:
             instance.regular_price = instance.discount_price
-
-        # Save the instance
         instance.save()
         return instance        
     
