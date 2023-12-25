@@ -64,11 +64,12 @@ class Product(models.Model):
         return f"{self.title}"
 
     def save(self, *args, **kwargs):
-        discount_percentage_decimal = Decimal(self.discount_percentage)  
-        self.discount_price = self.regular_price - (self.regular_price * (discount_percentage_decimal / 100))
-        self.regular_price = self.discount_price
-        if discount_percentage_decimal != 0:
-            self.regular_price = self.regular_price
+        if not self.id:
+            discount_percentage_decimal = Decimal(self.discount_percentage)  
+            self.discount_price = self.regular_price - (self.regular_price * (discount_percentage_decimal / 100))
+            self.regular_price = self.discount_price
+            if discount_percentage_decimal != 0:
+                self.regular_price = self.regular_price
 
         self.slug = slugify(self.title)
 

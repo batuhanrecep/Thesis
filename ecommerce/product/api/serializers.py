@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pyexpat import model
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
@@ -30,8 +31,26 @@ class ProductSerializer(ModelSerializer):
         product = Product(seller=seller, **validated_data)
         product.save()
         return product
-        
+
+    def update(self, instance, validated_data):
+        # Update fields based on validated_data
+        instance.title = validated_data.get('title', instance.title)
+        instance.stock = validated_data.get('stock', instance.stock)
+        instance.description = validated_data.get('description', instance.description)
+        instance.regular_price = validated_data.get('regular_price', instance.regular_price)
+        instance.discount_percentage = validated_data.get('discount_percentage', instance.discount_percentage)
+
+        # Calculate discount_price and update regular_price if discount_percentage is not zero
+        discount_percentage_decimal = Decimal(instance.discount_percentage)
+        instance.discount_price = instance.regular_price - (instance.regular_price * (discount_percentage_decimal / 100))
+        if discount_percentage_decimal != 0:
+            instance.regular_price = instance.discount_price
+
+        # Save the instance
+        instance.save()
+        return instance        
     
+
     def perform_update(self, serializer):
         seller = self.context['request'].user
         serializer.save(seller=seller)

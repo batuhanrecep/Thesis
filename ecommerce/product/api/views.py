@@ -2,13 +2,13 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from ..models import Product
 from .serializers import ProductSerializer
-from authentication.permissions import IsOwnerOrReadOnly, IsOwner, IsSellerOrAdmin
+from authentication.permissions import IsOwnerOrReadOnly, IsOwner, IsSellerOrAdmin,IsOwnerOrReadOnly2,IsOwner2
 
 #! GetAll Products that belongs to Seller 
 class SellerProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes =[IsSellerOrAdmin,permissions.IsAuthenticated,IsOwner]
+    permission_classes =[IsSellerOrAdmin,permissions.IsAuthenticated,IsOwner2]
 
     def get_queryset(self):
         # Retrieve addresses for the authenticated user
@@ -20,7 +20,7 @@ seller_product_list_view = SellerProductListAPIView.as_view()
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes =[IsOwnerOrReadOnly]
+    permission_classes =[IsOwnerOrReadOnly2]
 product_detail_view = ProductDetailAPIView.as_view()
 #//------------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ product_detail_view = ProductDetailAPIView.as_view()
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes =[IsOwnerOrReadOnly]
+    permission_classes =[IsOwnerOrReadOnly2]
 
 product_list_view = ProductListAPIView.as_view()
 
@@ -48,7 +48,7 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsOwner]
+    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly2,IsOwner2]
 
     def perform_destroy(self, instance):
         
@@ -63,8 +63,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly,IsOwner]
-
+    permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly2,IsOwner2]
 
 
 product_update_view = ProductUpdateAPIView.as_view()
