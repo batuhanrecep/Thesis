@@ -7,9 +7,10 @@ from django.core.validators import MinValueValidator
 class Order(models.Model):
     STATUS_CHOICES = (
         ('P', 'Pending'),
-        ('C', 'Confirmed'),
-        ('S', 'Shipped'),
+        ('H', 'Preparing'),
+        ('S', 'Shipping'),
         ('D', 'Delivered'),
+        ('C', 'Cancelled'),
     )
 
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, help_text="Customer who is ordering")

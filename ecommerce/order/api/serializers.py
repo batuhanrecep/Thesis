@@ -49,3 +49,14 @@ class SellerOrderSerializer(serializers.ModelSerializer):
 
         representation['items'] = filtered_items
         return representation
+    
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['status']
+
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance

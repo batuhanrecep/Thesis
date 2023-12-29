@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions, status
 from ..models import Order, OrderedItems
-from .serializers import OrderSerializer, SellerOrderSerializer
+from .serializers import OrderSerializer, SellerOrderSerializer, OrderUpdateSerializer
 from basket.api.views import get_basket_for_user
 from rest_framework.response import Response
 from django.db import transaction
@@ -65,7 +65,17 @@ class SellerOrderListAPIView(generics.ListAPIView):
         return queryset
 
 
+class OrderUpdateAPIView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-seller_order_list_view = SellerOrderListAPIView.as_view()
+    def get_serializer_class(self):
+        if self.request.method in ['PATCH', 'PUT']:
+            return OrderUpdateSerializer
+        return OrderSerializer
 
+    def perform_update(self, serializer):
+        serializer.save()
 
+        
