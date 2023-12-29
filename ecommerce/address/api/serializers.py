@@ -7,9 +7,9 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('user',)  # Make user field read-only during creation
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        address = Address(user=user, **validated_data)
-        address.save()
-        return address
+    # def create(self, validated_data):
+    #     user = self.context['request'].user
+    #     address = Address(user=user, **validated_data)
+    #     address.save()
+    #     return address
     
