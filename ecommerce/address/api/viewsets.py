@@ -1,8 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions
+from rest_framework import permissions, status
 from ..models import Address
 from .serializers import AddressSerializer
 from authentication.permissions import IsOwnerOrReadOnly, IsOwner
+from rest_framework.response import Response
 
 class AddressViewSet(ModelViewSet):
     queryset = Address.objects.all()
@@ -31,3 +32,14 @@ class AddressViewSet(ModelViewSet):
             existing_address.save()
         serializer.save()
 
+    def perform_destroy(self, instance):
+        is_default = instance.default
+        address_type = instance.address_type
+        instance.delete()
+        if is_default:
+            other_addresses = Address.objects.filter(user=self.request.user, address_type=address_type).exclude(pk=instance.pk)
+            if other_addresses.exists():
+                new_default_address = other_addresses.first()
+                new_default_address.default = True
+                new_default_address.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
