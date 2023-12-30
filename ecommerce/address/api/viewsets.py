@@ -14,15 +14,43 @@ class AddressViewSet(ModelViewSet):
         return Address.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        user = self.request.user
         address_type = serializer.validated_data['address_type']
-        is_default = serializer.validated_data.get('default', False)
-        if is_default:
-            existing_default_addresses = Address.objects.filter(user=self.request.user, address_type=address_type, default=True)
-            for existing_address in existing_default_addresses:
-                existing_address.default = False
-                existing_address.save()
 
-        serializer.save(user=self.request.user)
+        # Before creating a new address, set all existing addresses to default=False
+        Address.objects.filter(user=user).update(default=False)
+
+        # Save the new address from the POST data, ensuring it's set as the default
+        new_address = serializer.save(user=user, default=True)
+
+        # Determine the opposite address type to create
+        opposite_address_type = 'S' if address_type == 'B' else 'B'
+
+        # Prepare data for the opposite address type
+        opposite_address_data = {
+            'user': user,
+            'mahalle': new_address.mahalle,
+            'cadde': new_address.cadde,
+            'sokak': new_address.sokak,
+            'apartman': new_address.apartman,
+            'daire': new_address.daire,
+            'semt': new_address.semt,
+            'sehir': new_address.sehir,
+            'country': new_address.country,
+            'post_code': new_address.post_code,
+            'address_type': opposite_address_type,
+            'default': True  # The opposite address should not be default
+        }
+
+        # Create and save the opposite address
+        # Ensure the user is valid and not None
+        if user and user.is_authenticated:
+            Address.objects.create(**opposite_address_data)
+        else:
+            # Handle the case where the user is not authenticated or is None
+            # You might want to log this or handle it according to your application's needs
+            pass
+
 
     def perform_update(self, serializer):
         address_type = serializer.validated_data.get('address_type', serializer.instance.address_type)
