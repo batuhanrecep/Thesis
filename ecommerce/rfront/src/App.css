@@ -1,4 +1,9 @@
-#root {
-  margin: 0 auto;
-  text-align: center;
+body {
+    font-family: 'Muli', sans-serif;
+    letter-spacing: -1px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }

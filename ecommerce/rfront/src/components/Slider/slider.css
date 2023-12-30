@@ -1,0 +1,101 @@
+.slider-container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+    height: 575px;
+    background: url("../../assets/images/bg-2.jpg");
+    padding: 7.5%;
+  }
+  
+  .slide {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 1650px;
+    height: 480px;
+    margin: 0 auto;
+    transition: transform 0.3s ease-in-out;
+    position: relative;
+  }
+
+  .slide:hover, .sliderright:hover{
+    transform: scale(1.01);
+  }
+
+  .sliderright {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: burlywood;
+    width: 50%;
+    height: 480px;
+    margin-left: 30px;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .slide-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #8A2BE2;
+  }
+
+  .slide-image2 {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    object-position: left;
+    border-radius: 10px;
+    border: 1px solid #8A2BE2;
+  }
+  
+  .slide-caption {
+    position: absolute;
+    margin: 0 auto;
+    width: 60%;
+    height: 75%;
+    color: black;
+    padding: 25px;
+    font-size: 2.3rem;
+    font-weight: bold;
+    text-shadow: 0 0 4px #a767e395;
+  }
+  .slide-caption2 {
+    position: absolute;
+    top: 0;
+    padding-top: 16%;
+    padding-left: 30px;
+    color: black;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 4px #a767e395;
+  }
+  
+  .slide-description {
+    height: auto;
+    padding-top: 10px;
+    text-align: left;
+    font-size: 1.15rem;
+    font-weight: lighter;
+  }
+
+  .urunegit {
+    padding: 8px 30px;
+    font-weight: bold;
+    font-size: 1.03rem;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px;
+    color: #8A2BE2 !important;
+    border: 1px solid #8A2BE2;
+  }
+
+  .urunegit:hover {
+    background-color: #8A2BE2 !important;
+    color: white !important;
+  }

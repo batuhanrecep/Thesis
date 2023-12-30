@@ -1,0 +1,86 @@
+.cart-container {
+    display: flex;
+    max-width: 1650px;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 30px;
+    background-color: rgba(215, 227, 216, 0.197);
+  }
+  
+  .left-column {
+    flex: 2.5;
+  }
+  
+  .product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    background-color: rgba(0, 0, 16, 0) !important;
+    color: white;
+  }
+
+  .table {
+    margin: 20px;
+  }
+
+  input {
+    border-radius: 10px;
+  }
+
+  .cart-title {
+    font-size: 20px;
+  }
+  
+  .right-column {
+    flex: .7;
+    padding: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .total-amount {
+    margin: 20px 0;
+  }
+  
+  .odeme {
+    width: 100%;
+    height: auto;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin: 0 auto;
+    background-color: red;
+  }
+  
+  .button-quantity {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    margin: 0 7px;
+    font-weight: bold;
+  }
+
+  .cart-table thead tr th{
+    color: black !important;
+    font-size: 18px;
+    border-bottom: 1px solid black;
+  }
+
+  .cart-table tbody tr td{
+    color: black !important;
+    border-bottom: 1px solid rgb(210, 210, 210);
+    padding: 5px 0;
+  }
