@@ -15,6 +15,9 @@ import Signup from './components/Auth/signup';
 import Account from './components/Account/account';
 import Logout from './components/Auth/logout';
 
+import Address from './components/AddressPage/Address';
+
+
 function App() {
   const isLoggedIn = !!localStorage.getItem('token');
 
@@ -37,6 +40,7 @@ function App() {
           ) : (
             <>
             <Route path="/cart" element={<Cart />} />
+            <Route path="/cart/address" element={<Address />} />
             <Route path="/signup" element={<Home />} />
             <Route path="/login" element={<Home />} />
             </>
@@ -46,6 +50,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/account" element={<Account />} />
           <Route path="/logout" element={<Logout />} />
+
+
         </Routes>
         <Footer />
       </div>

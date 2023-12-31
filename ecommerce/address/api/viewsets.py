@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 from ..models import Address
-from .serializers import AddressSerializer
+from .serializers import AddressSerializer, AddressUpdateSerializer
 from authentication.permissions import IsOwnerOrReadOnly, IsOwner
 from rest_framework.response import Response
 
@@ -71,3 +71,36 @@ class AddressViewSet(ModelViewSet):
                 new_default_address.default = True
                 new_default_address.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+    
+class ListShippingAddressAPIView(generics.ListAPIView):
+    serializer_class = AddressUpdateSerializer
+    permission_classes =[permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Address.objects.filter(user=user, address_type='S')
+
+
+
+class AddressUpdateAPIView(generics.UpdateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressUpdateSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        instance = serializer.instance
+
+        address_fields = ['mahalle', 'sehir', 'cadde', 'sokak','apartman', 'daire', 'semt', 'post_code', ]
+        instance_data = {field: getattr(instance, field) for field in address_fields}
+
+        identical_addresses = Address.objects.filter(user=self.request.user, **instance_data).exclude(pk=instance.pk)
+
+        for identical_address in identical_addresses:
+            for field in address_fields:
+                setattr(identical_address, field, serializer.validated_data.get(field, getattr(identical_address, field)))
+            identical_address.save()
+
+        serializer.save()
