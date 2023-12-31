@@ -4,6 +4,7 @@ from ..models import Address
 from .serializers import AddressSerializer, AddressUpdateSerializer
 from authentication.permissions import IsOwnerOrReadOnly, IsOwner
 from rest_framework.response import Response
+from rest_framework.exceptions import MethodNotAllowed
 
 class AddressViewSet(ModelViewSet):
     queryset = Address.objects.all()
@@ -29,6 +30,7 @@ class AddressViewSet(ModelViewSet):
         # Prepare data for the opposite address type
         opposite_address_data = {
             'user': user,
+            'address_name': new_address.address_name,
             'mahalle': new_address.mahalle,
             'cadde': new_address.cadde,
             'sokak': new_address.sokak,
@@ -93,7 +95,7 @@ class AddressUpdateAPIView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.instance
 
-        address_fields = ['mahalle', 'sehir', 'cadde', 'sokak','apartman', 'daire', 'semt', 'post_code', ]
+        address_fields = ['mahalle','address_Name', 'sehir', 'cadde', 'sokak','apartman', 'daire', 'semt', 'post_code', ]
         instance_data = {field: getattr(instance, field) for field in address_fields}
 
         identical_addresses = Address.objects.filter(user=self.request.user, **instance_data).exclude(pk=instance.pk)
@@ -104,3 +106,8 @@ class AddressUpdateAPIView(generics.UpdateAPIView):
             identical_address.save()
 
         serializer.save()
+
+#from rest_framework.exceptions import MethodNotAllowed
+    # def update(self, request, *args, **kwargs):
+    #     # Disable the default update operation and raise MethodNotAllowed
+    #     raise MethodNotAllowed("Update operation is not allowed")

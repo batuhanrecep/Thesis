@@ -12,7 +12,7 @@ ADDRESS_CHOICES = (
 
 class Address(models.Model):
     user = models.ForeignKey(UserAccount,on_delete=models.CASCADE)
-
+    address_name = models.CharField(max_length=50)
     mahalle = models.CharField(max_length=50)
     cadde = models.CharField(max_length=50)
     sokak = models.CharField(max_length=50)
