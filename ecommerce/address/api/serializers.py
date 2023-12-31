@@ -13,3 +13,8 @@ class AddressUpdateSerializer(serializers.ModelSerializer):
         fields = ['id', 'address_name', 'user', 'mahalle','cadde', 'sokak', 'apartman', 'daire', 'semt', 'sehir', 'country', 'post_code', ]
         read_only_fields = ('user',)  # Make user field read-only during creation
 
+class DefaultAddressUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['id', 'user', 'address_type', 'default', ]
+        read_only_fields = ('user',)  # Make user field read-only during creation

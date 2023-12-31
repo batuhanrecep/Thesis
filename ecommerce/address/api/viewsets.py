@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, status, generics
 from ..models import Address
-from .serializers import AddressSerializer, AddressUpdateSerializer
+from .serializers import AddressSerializer, AddressUpdateSerializer, DefaultAddressUpdateSerializer
 from authentication.permissions import IsOwnerOrReadOnly, IsOwner
 from rest_framework.response import Response
 from rest_framework.exceptions import MethodNotAllowed
@@ -111,3 +111,17 @@ class AddressUpdateAPIView(generics.UpdateAPIView):
     # def update(self, request, *args, **kwargs):
     #     # Disable the default update operation and raise MethodNotAllowed
     #     raise MethodNotAllowed("Update operation is not allowed")
+        
+class DefaultAddressUpdateAPIView(generics.UpdateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = DefaultAddressUpdateSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        address_type = serializer.validated_data.get('address_type', serializer.instance.address_type)
+        existing_default_addresses = Address.objects.filter(user=self.request.user, address_type=address_type, default=True).exclude(pk=serializer.instance.pk)
+        for existing_address in existing_default_addresses:
+            existing_address.default = False
+            existing_address.save()
+        serializer.save()

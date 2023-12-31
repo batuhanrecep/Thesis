@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .viewsets import AddressViewSet, AddressUpdateAPIView, ListShippingAddressAPIView
+from .viewsets import AddressViewSet, AddressUpdateAPIView, ListShippingAddressAPIView,DefaultAddressUpdateAPIView
 
 
 
@@ -10,6 +10,7 @@ from .viewsets import AddressViewSet, AddressUpdateAPIView, ListShippingAddressA
 urlpatterns = [
     path('update/<int:pk>/', AddressUpdateAPIView.as_view(), name='address-update-profile'),
     path('get/', ListShippingAddressAPIView.as_view(), name='get-shipping-address'),
+    path('default/<int:pk>/', DefaultAddressUpdateAPIView.as_view(), name='change-default-address'),
 ]
 
 router = DefaultRouter()
