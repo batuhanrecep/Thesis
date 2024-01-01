@@ -45,7 +45,7 @@ class SellerSerializer(UserAccountSerializer):
 class GetUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAccount
-        fields = ('email', 'firstname', 'lastname','phone')
+        fields = ('email', 'firstname', 'lastname','phone','type','store_name')
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:

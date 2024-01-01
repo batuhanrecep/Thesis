@@ -20,10 +20,13 @@ urlpatterns = [
     path('breweries/', views.breweries, name='breweries'),
 
     path('getuser/', views.get_or_update_user_view, name='Get user view'),
-    path('becomeseller/', views.become_seller_view, name='Become Seller'),
+
+
+    
 
     path('changepassword/', views.change_password, name='Change Password'),
     
+    path('becomeseller/', views.become_seller_view, name='Become Seller'), #KULLANILMIYOR
     #path('logout/', views.logout_view, name='logout view'),
     #path('logout/', LogoutView.as_view(), name='logout'),
 ]
