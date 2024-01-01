@@ -91,7 +91,7 @@ class AddressUpdateAPIView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.instance
 
-        address_fields = ['mahalle','address_Name', 'sehir', 'cadde', 'sokak','apartman', 'daire', 'semt', 'post_code', ]
+        address_fields = ['mahalle','address_name', 'sehir', 'cadde', 'sokak','apartman', 'daire', 'semt', 'post_code', ]
         instance_data = {field: getattr(instance, field) for field in address_fields}
 
         identical_addresses = Address.objects.filter(user=self.request.user, **instance_data).exclude(pk=instance.pk)
