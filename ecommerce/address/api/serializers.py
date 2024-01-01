@@ -6,6 +6,10 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = '__all__'
         read_only_fields = ('user',)  # Make user field read-only during creation
+        extra_kwargs = {
+            'address_type': {'required': False}
+        }
+
 
 class AddressUpdateSerializer(serializers.ModelSerializer):
     class Meta:

@@ -16,18 +16,18 @@ class AddressViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        address_type = serializer.validated_data['address_type']
+        #address_type = serializer.validated_data['address_type']
+        serializer.validated_data['address_type'] = 'B'
 
-        # Before creating a new address, set all existing addresses to default=False
         Address.objects.filter(user=user).update(default=False)
 
-        # Save the new address from the POST data, ensuring it's set as the default
+
         new_address = serializer.save(user=user, default=True)
 
-        # Determine the opposite address type to create
-        opposite_address_type = 'S' if address_type == 'B' else 'B'
 
-        # Prepare data for the opposite address type
+        #opposite_address_type = 'S' if address_type == 'B' else 'B'
+        opposite_address_type = 'S' if new_address.address_type == 'B' else 'B'
+
         opposite_address_data = {
             'user': user,
             'address_name': new_address.address_name,
@@ -41,16 +41,12 @@ class AddressViewSet(ModelViewSet):
             'country': new_address.country,
             'post_code': new_address.post_code,
             'address_type': opposite_address_type,
-            'default': True  # The opposite address should not be default
+            'default': True  
         }
 
-        # Create and save the opposite address
-        # Ensure the user is valid and not None
         if user and user.is_authenticated:
             Address.objects.create(**opposite_address_data)
         else:
-            # Handle the case where the user is not authenticated or is None
-            # You might want to log this or handle it according to your application's needs
             pass
 
 
@@ -125,3 +121,4 @@ class DefaultAddressUpdateAPIView(generics.UpdateAPIView):
             existing_address.default = False
             existing_address.save()
         serializer.save()
+
