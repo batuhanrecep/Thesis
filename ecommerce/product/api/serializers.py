@@ -4,12 +4,12 @@ from rest_framework import serializers
 from ..models import Product, Category
 
 
-
-
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ('id','name','slug')   
+
+
 
 class ProductSerializer(ModelSerializer):    
     category_name=serializers.SerializerMethodField(read_only=True)
@@ -26,9 +26,11 @@ class ProductSerializer(ModelSerializer):
             return None
     
     def create(self, validated_data):
-        seller = self.context['request'].user
+        categories_data = validated_data.pop('categories', [])
+        seller = self.context['request'].user    
         product = Product(seller=seller, **validated_data)
         product.save()
+        product.categories.set(categories_data)
         return product
 
     #Product modeldeki save methodunu kullanmamak için 
