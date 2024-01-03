@@ -61,16 +61,44 @@ class AddressViewSet(ModelViewSet):
     def perform_destroy(self, instance):
         is_default = instance.default
         address_type = instance.address_type
-        instance.delete()
+
+        # Delete the identical address with opposite address type
+        opposite_address_type = 'S' if address_type == 'B' else 'B'
+        opposite_address = Address.objects.filter(
+            user=self.request.user,
+            address_type=opposite_address_type,
+            sehir=instance.sehir,  # Add other fields as needed
+            country=instance.country,
+            mahalle=instance.mahalle,
+        ).first()
+
+        if opposite_address:
+            if opposite_address.default:
+                # Find another address of the same type and set it as the new default
+                other_addresses = Address.objects.filter(
+                    user=self.request.user,
+                    address_type=opposite_address_type,
+                ).exclude(pk=opposite_address.pk)
+
+                if other_addresses.exists():
+                    new_default_address = other_addresses.first()
+                    new_default_address.default = True
+                    new_default_address.save()
+
+            opposite_address.delete()
+
+        # Set a new default address if needed
         if is_default:
-            other_addresses = Address.objects.filter(user=self.request.user, address_type=address_type).exclude(pk=instance.pk)
+            other_addresses = Address.objects.filter(user=self.request.user, address_type=address_type)
             if other_addresses.exists():
                 new_default_address = other_addresses.first()
                 new_default_address.default = True
                 new_default_address.save()
+
+        instance.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-
     
 class ListShippingAddressAPIView(generics.ListAPIView):
     serializer_class = AddressUpdateSerializer
