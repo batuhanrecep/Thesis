@@ -14,9 +14,9 @@ import Login from './components/Auth/login';
 import Signup from './components/Auth/signup';
 import Account from './components/Account/account';
 import Logout from './components/Auth/logout';
-
-import Address from './components/AddressPage/Address';
-
+import Sell from './components/Seller/sell';
+import BecomeASeller from './components/Seller/become-a-seller';
+import Payment from './components/Cart/payment';
 
 function App() {
   const isLoggedIn = !!localStorage.getItem('token');
@@ -33,25 +33,27 @@ function App() {
 
           {!isLoggedIn ? (
             <>
-            <Route path="/cart" element={<Navigate to="/login" />}/>
-            <Route path="/account" element={<Navigate to="/login" />}/>
-            <Route path="/logout" element={<Navigate to="/login" />}/>
+              <Route path="/cart" element={<Navigate to="/login" />} />
+              <Route path="/account" element={<Navigate to="/login" />} />
+              <Route path="/logout" element={<Navigate to="/login" />} />
             </>
           ) : (
             <>
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/cart/address" element={<Address />} />
-            <Route path="/signup" element={<Home />} />
-            <Route path="/login" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/signup" element={<Home />} />
+              <Route path="/login" element={<Home />} />
             </>
           )}
-
+          <Route
+            path="/payment"
+            element={<Payment />}
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/account" element={<Account />} />
           <Route path="/logout" element={<Logout />} />
-
-
+          <Route path="/sell" element={<Sell />} />
+          <Route path="/become-a-seller" element={<BecomeASeller />} />
         </Routes>
         <Footer />
       </div>

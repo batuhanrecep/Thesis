@@ -20,7 +20,7 @@ const Footer = () => {
                     </div>
                     <p className="mb-1 "><i className="fa-solid fa-headphones-simple me-2"></i> 24/7 Yardım Hattı:</p>
                     <p className="fs-3 ms-3">(555) 987 6543</p>
-                    <p className="mb-1 "><i className="fa-solid fa-map-location-dot me-2"></i>  Kavaklıdere, Esat Cd. No:61/1, 06660 Çankaya/Ankara</p>
+                    <p className="mb-1 "><i className="fa-solid fa-map-location-dot me-2"></i>  Şair Mehmet Akif Ersoy Sokağı 8/A, 34096 Fatih/İstanbul</p>
                     <p><i className="fa-regular fa-envelope me-2"></i> support@Ecommerce.com</p>
                 </div>
                 <div className="fs-row-2">

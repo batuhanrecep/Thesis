@@ -2,6 +2,8 @@ from rest_framework import generics, permissions
 from ..models import Product
 from .serializers import ProductSerializer
 from authentication.permissions import IsSellerOrAdmin,IsOwnerOrReadOnly2,IsOwner2
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 #! GetAll Products that belongs to Seller 
 class SellerProductListAPIView(generics.ListAPIView):
@@ -37,7 +39,7 @@ class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes =[permissions.IsAuthenticated, IsSellerOrAdmin]
-
+    parser_classes = (MultiPartParser, FormParser)
 
 product_create_view = ProductCreateAPIView.as_view()
 
@@ -63,6 +65,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'pk'
     permission_classes =[permissions.IsAuthenticated,IsOwnerOrReadOnly2,IsOwner2]
+    parser_classes = (MultiPartParser, FormParser)
 
 
 product_update_view = ProductUpdateAPIView.as_view()

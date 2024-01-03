@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Featured from '../Featured/featured';
 import Products from '../Products/products';
 import "./cart.css";
@@ -14,29 +14,13 @@ function Cart() {
   const [originalTotalAmount, setOriginalTotalAmount] = useState(0);
 
   const userToken = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const handleProductAddedToCart = () => {
     setReloadCart((prevReloadCart) => !prevReloadCart);
     setDiscountApplied(false);
     setCouponCode("");
   };
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/basket/items/", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCartItems(data);
-        const total = data.reduce((sum, item) => sum + item.total_price, 0);
-        setTotalAmount(total);
-        setOriginalTotalAmount(total);
-      })
-      .catch((error) => console.error("API Hatası:", error));
-  }, [userToken, reloadCart]);
 
   const handleUpdateQuantity = async (id, newQuantity) => {
     const updatedQuantity = Math.max(1, newQuantity);
@@ -114,15 +98,34 @@ function Cart() {
     if (discountApplied || !couponCode.trim()) {
       return;
     }
-    if (couponCode === "Kupon ") {
+    if (couponCode === "Kupon") {
       setTotalAmount((prevTotalAmount) => prevTotalAmount * 0.8); // %20 indirim
       setDiscountApplied(true);
     } else {
-      alert(
-        "Geçersiz kupon kodu. Lütfen doğru bir kupon kodu girin."
-      );
+      alert("Geçersiz kupon kodu. Lütfen doğru bir kupon kodu girin.");
     }
   };
+
+  const handleCompletePurchase = () => {
+    navigate("/payment", { state: { totalAmount } });
+  };
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/basket/items/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCartItems(data);
+        const total = data.reduce((sum, item) => sum + item.total_price, 0);
+        setTotalAmount(total);
+        setOriginalTotalAmount(total);
+      })
+      .catch((error) => console.error("API Hatası:", error));
+  }, [userToken, reloadCart]);
 
   return (
     <>
@@ -266,7 +269,9 @@ function Cart() {
                   )}
                 </h1>
               </div>
-              <button className="btn text-light odeme fw-bold">Alışverişi Tamamla</button>
+              <button className="btn text-light odeme fw-bold" onClick={handleCompletePurchase}>
+                Alışverişi Tamamla
+              </button>
             </>
           )}
         </div>

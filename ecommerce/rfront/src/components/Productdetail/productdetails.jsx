@@ -93,16 +93,16 @@ const ProductDetail = () => {
             <>
               <h5>
                 <del style={{marginRight:'10px'}}>
-                  {product.regular_price / ((100 - product.discount_percentage) / 100)} TL
+                  {(product.regular_price / ((100 - product.discount_percentage) / 100)).toFixed(2)} TL
                 </del>
                 <span style={{color:'green', fontWeight:'bold'}}>
                   %{product.discount_percentage} İNDİRİM!
                 </span>
               </h5>
-              <h1 style={{color:'green', fontWeight:'bold'}}>{Math.floor(product.regular_price)} TL</h1>
+              <h1 style={{color:'green', fontWeight:'bold'}}>{product.regular_price} TL</h1>
             </>
           ) : (
-            <h1>{Math.floor(product.regular_price)} TL</h1>
+            <h1>{Number(product.regular_price).toFixed(2)} TL</h1>
           )}
           <h6>{product.stock > 0 ? `Stokta ${product.stock} adet Var` : "Stokta Yok"}</h6>
 

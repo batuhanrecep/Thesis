@@ -78,3 +78,8 @@ class Product(models.Model):
         except AttributeError:
             return None
     
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name = "images")
+    image = models.ImageField(upload_to="productpic", default="", null=True, blank=True)
+    

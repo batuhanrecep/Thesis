@@ -1,0 +1,17 @@
+.editButton {
+    display: none;
+  }
+  
+  .editButtonContainer {
+    position: relative;
+    background-color: #f2f2f3;
+    cursor: pointer;
+  }
+  
+  .editButtonContainer:hover .editButton {
+    display: inline-block;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }

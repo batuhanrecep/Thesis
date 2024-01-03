@@ -1,7 +1,7 @@
 from decimal import Decimal
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from ..models import Product, Category
+from ..models import Product, Category, ProductImage
 
 
 class CategorySerializer(ModelSerializer):
@@ -10,13 +10,25 @@ class CategorySerializer(ModelSerializer):
         fields = ('id','name','slug')   
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "product", "image"]
+
+
 
 class ProductSerializer(ModelSerializer):    
+    images = ProductImageSerializer(many=True, read_only=True)#
+    uploaded_images = serializers.ListField(
+        child = serializers.ImageField(max_length = 1000000, allow_empty_file = False, use_url = False),
+        write_only=True)
     category_name=serializers.SerializerMethodField(read_only=True)
     store_name = serializers.ReadOnlyField(source='seller.store_name')
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['seller','id','title','stock','description','is_offer','is_slide',
+                  'is_featured','slug','categories','created_at','updated_at','regular_price',
+                  'discount_percentage','store_name','images','uploaded_images','category_name']
         read_only_fields = ('seller',)
 
     def get_category_name(self, obj):
@@ -26,11 +38,16 @@ class ProductSerializer(ModelSerializer):
             return None
     
     def create(self, validated_data):
+        seller = self.context['request'].user  
         categories_data = validated_data.pop('categories', [])
-        seller = self.context['request'].user    
+        uploaded_images = validated_data.pop("uploaded_images")
+  
         product = Product(seller=seller, **validated_data)
         product.save()
         product.categories.set(categories_data)
+
+        for image in uploaded_images:
+            newproduct_image = ProductImage.objects.create(product=product, image=image)
         return product
 
     #Product modeldeki save methodunu kullanmamak için 
@@ -41,8 +58,15 @@ class ProductSerializer(ModelSerializer):
         instance.regular_price = validated_data.get('regular_price', instance.regular_price)
         instance.discount_percentage = validated_data.get('discount_percentage', instance.discount_percentage)
         instance.image = validated_data.get('image', instance.image)
+        
         categories = validated_data.get('categories', instance.categories.all())
         instance.categories.set(categories)
+
+        uploaded_images = validated_data.get("uploaded_images", [])
+        instance.images.all().delete()  # Delete existing images
+        for image in uploaded_images:
+            ProductImage.objects.create(product=instance, image=image)
+
 
         discount_percentage_decimal = Decimal(instance.discount_percentage)
         instance.discount_price = instance.regular_price - (instance.regular_price * (discount_percentage_decimal / 100))

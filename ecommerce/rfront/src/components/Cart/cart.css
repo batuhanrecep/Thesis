@@ -84,3 +84,16 @@
     border-bottom: 1px solid rgb(210, 210, 210);
     padding: 5px 0;
   }
+
+  .cart-address:hover{
+    background-color: rgb(228, 228, 228);
+    cursor: pointer;
+  }
+
+  .checkdone {
+    width: 70%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -5px);
+}
