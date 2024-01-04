@@ -17,6 +17,7 @@ import Logout from './components/Auth/logout';
 import Sell from './components/Seller/sell';
 import BecomeASeller from './components/Seller/become-a-seller';
 import Payment from './components/Cart/payment';
+import OrderSummary from './components/Cart/ordersummary';
 
 function App() {
   const isLoggedIn = !!localStorage.getItem('token');
@@ -40,19 +41,17 @@ function App() {
           ) : (
             <>
               <Route path="/cart" element={<Cart />} />
-              <Route path="/signup" element={<Home />} />
-              <Route path="/login" element={<Home />} />
+              <Route path="/signup" element={<Navigate to="/" />} />
+              <Route path="/login" element={<Navigate to="/" />} />
             </>
           )}
-          <Route
-            path="/payment"
-            element={<Payment />}
-          />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/account" element={<Account />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/sell" element={<Sell />} />
+          <Route path="/sell/*" element={<Sell />} />
+          <Route path="/order-summary" element={<OrderSummary />} />
           <Route path="/become-a-seller" element={<BecomeASeller />} />
         </Routes>
         <Footer />

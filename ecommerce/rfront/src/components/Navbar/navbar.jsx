@@ -116,6 +116,7 @@ function MyNavbar() {
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
+                  style={{zIndex:"3"}}
                 >
                   KATEGORILER
                 </Link>
@@ -210,7 +211,7 @@ function MyNavbar() {
 
       <nav
         className="navbar navbar-expand-lg sticky-top bg-white"
-        style={{ height: "70px" }}
+        style={{ height: "70px", zIndex:"2" }}
       >
         <div className="container-fluid fw-bold" style={{ width: "1650px" }}>
           <div className="dropdown" style={{ marginRight: "20px" }}>

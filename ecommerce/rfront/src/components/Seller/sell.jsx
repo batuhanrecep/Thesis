@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
+import SellerNavigation from "./sellernavigation";
+import AddProduct from "./addproduct";
+import MyProducts from "./myproduct";
 
 function Sell() {
   const [isSeller, setIsSeller] = useState(false);
@@ -34,18 +37,22 @@ function Sell() {
   }, []);
 
   useEffect(() => {
-    console.log("isSeller:", isSeller);
     if (isSeller) {
-      navigate("/sell");
+      navigate("/sell/add-product");
     }
   }, [isSeller, navigate]);
 
   return (
     <div className="container mt-5 fs-5 bg-light rounded-3">
       <div className="row">
-        <div className="col-md-12 p-3">
-          <h2 className="text-center border-bottom pb-2">Satıcı Paneli</h2>
-          <p>Panel içeriği..</p>
+        <div className="col-md-3 p-3">
+          <SellerNavigation />
+        </div>
+        <div className="col-md-9 p-3">
+          <Routes>
+            <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/my-products" element={<MyProducts />} />
+          </Routes>
         </div>
       </div>
     </div>

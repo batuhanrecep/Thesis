@@ -24,7 +24,9 @@ const Slider = () => {
       {homeProducts.slice(0, 1).map((product) => (
         <div key={product.id} className="slide">
           <img
-            src={product.image}
+            src={
+              product.images[0]?.image ?? "../src/assets/images/resimyok.jpg"
+            }
             alt={product.title}
             className="slide-image"
           />
@@ -48,7 +50,9 @@ const Slider = () => {
         {homeProducts2.slice(0, 1).map((product) => (
           <div key={product.id}>
             <img
-              src={product.image}
+              src={
+                product.images[0]?.image ?? "../src/assets/images/resimyok.jpg"
+              }
               alt={product.title}
               className="slide-image2"
             />
@@ -56,8 +60,18 @@ const Slider = () => {
               HAFTANIN FIRSATI
               <div className="slide-description pe-5 h-75 d-flex flex-column justify-content-end">
                 <h3 className="mb-auto">{product.title}</h3>
-                <h3>%{product.discount_percentage} İNDİRİM FIRSATI</h3>
-                <h3><del>{product.regular_price / ((100 - product.discount_percentage) / 100)} TL</del></h3>
+                {product.discount_percentage > 0 && (
+                  <>
+                    <h3>%{product.discount_percentage} İNDİRİM FIRSATI</h3>
+                    <h3>
+                      <del>
+                        {product.regular_price /
+                          ((100 - product.discount_percentage) / 100)}{" "}
+                        TL
+                      </del>
+                    </h3>
+                  </>
+                )}
                 <h1>{product.regular_price} TL</h1>
               </div>
             </div>

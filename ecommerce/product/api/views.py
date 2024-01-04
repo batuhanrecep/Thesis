@@ -10,10 +10,12 @@ class SellerProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes =[IsSellerOrAdmin,permissions.IsAuthenticated,IsOwner2]
+    parser_classes = (MultiPartParser, FormParser)
+
 
     def get_queryset(self):
         # Retrieve addresses for the authenticated user
-        return Product.objects.filter(user=self.request.user)
+        return Product.objects.filter(seller=self.request.user)
 
 seller_product_list_view = SellerProductListAPIView.as_view()
 

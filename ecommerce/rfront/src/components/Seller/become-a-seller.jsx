@@ -18,7 +18,7 @@ function BecomeASeller() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            types: ["SELLER"]
+            "type": "SELLER"
           })
         })
           .then(response => {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./style.css"
 
 function Address() {
   const [addresses, setAddresses] = useState([]);
@@ -22,7 +23,7 @@ function Address() {
         .then(response => response.json())
         .then(data => {
           setAddresses(data);
-          setEditedAddress(data[0]); // Sadece ilk adresi düzenlenebilir adres olarak alıyoruz
+          setEditedAddress(data[0]);
         })
         .catch(error => {
           console.error("Error fetching addresses:", error);
@@ -45,11 +46,10 @@ function Address() {
         });
 
         if (response.ok) {
-          setAddresses([editedAddress, ...addresses.slice(1)]); // İlk adresi güncellenen adresle değiştirir
+          setAddresses([editedAddress, ...addresses.slice(1)]);
           setIsEditing(false);
           window.location.reload();
         } else {
-          // Hata durumunda API'nin gönderdiği mesajı kontrol et
           const errorMessage = await response.json();
           console.error("Error updating address information:", errorMessage);
         }
@@ -99,11 +99,10 @@ function Address() {
         });
 
         if (response.ok) {
-          setAddresses([newAddress, ...addresses]); // Yeni adresi ekler
+          setAddresses([newAddress, ...addresses]);
           setIsAdding(false);
           window.location.reload();
         } else {
-          // Hata durumunda API'nin gönderdiği mesajı kontrol et
           const errorMessage = await response.json();
           console.error("Error adding new address:", errorMessage);
         }
@@ -131,7 +130,6 @@ function Address() {
           setAddresses(updatedAddresses);
           window.location.reload();
         } else {
-          // Hata durumunda API'nin gönderdiği mesajı kontrol et
           const errorMessage = await response.json();
           console.error("Error deleting address:", errorMessage);
         }
@@ -142,6 +140,7 @@ function Address() {
   };
 
   const handleViewAddressClick = (address) => {
+    console.log("Address Data:", address);
     setEditedAddress(address);
     setSelectedAddress(address);
   };
@@ -149,17 +148,39 @@ function Address() {
   return (
     <div className="fw-bold">
       <h2 className="text-center border-bottom pb-2">Adres Bilgilerim</h2>
-<div className="d-flex flex-row justify-content-between align-items-center position-relative flex-wrap">
-{addresses.map(address => (
-  <div onClick={() => handleViewAddressClick(address)} key={address.id} className="editButtonContainer" style={{ width: addresses.length === 2 ? "50%" : "calc(33.33% - 10px)", minHeight: "100px", border: "1px dotted black", marginBottom: "10px", position:"relative", padding:"6px" }}>
-    <p className="my-0"><span className="fw-bold">{address.address_name}</span></p>
-    <p className="mb-0 small"><span className="fw-lighter">{address.mahalle}, {address.cadde}, {address.sokak}, ...</span></p>
-    <div className="text-center">
-      <button className="btn text-light w-100 editButton" onClick={() => handleViewAddressClick(address)}> Düzenle </button>
-    </div>
-  </div>
-  
-))} <button className="fw-bold text-danger" style={{ width: addresses.length === 2 ? "50%" : "calc(33.33% - 10px)", minHeight: "100px", border: "1px dotted black", marginBottom: "10px", position:"relative", padding:"6px" }} onClick={() => setIsAdding(true)}>Adres Ekle</button>
+      <div className="d-flex flex-row justify-content-between align-items-center position-relative flex-wrap">
+        {addresses.map((address) => (
+          <div
+            key={address.id}
+            onClick={() => handleViewAddressClick(address)}
+            className={`editButtonContainer ${address.default ? 'default-address' : ''}`}
+            style={{
+              width: addresses.length === 2 ? "50%" : "calc(33.33% - 10px)",
+              minHeight: "100px",
+              border: "1px dotted black",
+              marginBottom: "10px",
+              position: "relative",
+              padding: "6px",
+            }}
+          >
+            <p className="my-0">
+              <span className="fw-bold">{address.address_name}</span>
+            </p>
+            <p className="mb-0 small">
+              <span className="fw-lighter">
+                {address.mahalle}, {address.cadde}, {address.sokak}, ...
+              </span>
+            </p>
+            <div className="text-center">
+              <button
+                className="btn text-light w-100 editButton"
+                onClick={() => handleViewAddressClick(address)}
+              >
+                Düzenle
+              </button>
+            </div>
+          </div>
+        ))} <button className="fw-bold text-danger" style={{ width: addresses.length === 2 ? "50%" : "calc(33.33% - 10px)", minHeight: "100px", border: "1px dotted black", marginBottom: "10px", position:"relative", padding:"6px" }} onClick={() => setIsAdding(true)}>Adres Ekle</button>
         {selectedAddress && (
           <div className="modal fs-5">
             <h2>{selectedAddress.address_name}</h2>
@@ -211,7 +232,6 @@ function Address() {
             <p>Semt: <input type="text" name="semt" value={newAddress.semt || ""} onChange={handleNewAddressInputChange} /></p>
             <p>Şehir: <input type="text" name="sehir" value={newAddress.sehir || ""} onChange={handleNewAddressInputChange} /></p>
             <p>Posta Kodu: <input placeholder="61040" type="number" name="post_code" value={newAddress.post_code || ""} onChange={handleNewAddressInputChange} /></p>
-            <p>address_type: <input type="text" name="address_type" value={newAddress.address_type || ""} onChange={handleNewAddressInputChange} /></p>
             
             <div className="d-flex align-items-center justify-content-center mt-2">
             <button className="btn text-light fw-bold me-1" onClick={handleAddSaveClick}>Kaydet</button>

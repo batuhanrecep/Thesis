@@ -32,3 +32,28 @@
     top: 0;
     cursor: pointer;
   }
+
+  .sepet-modal {
+    display: block;
+    position: fixed;
+    top: 200px;
+    right: 20px;
+    background-color: #f1f1f1;
+    font-weight: bold;
+    padding: 20px;
+    border: 3px solid #8A2BE2;
+    z-index: 2;
+    border-radius: 10px;
+  }
+
+  .sepet-modal p {
+    margin: 0;
+  }
+  
+  .close {
+    position: absolute;
+    top: -13px;
+    right: 3px;
+    font-size: 30px;
+    cursor: pointer;
+  }

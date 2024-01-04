@@ -157,7 +157,7 @@ function Cart() {
                     <td className="text-start">
                       <Link to={`/product/${item.product.id}`}>
                         <img
-                          src={item.product.image}
+                          src={item.product.images[0]?.image ?? "../src/assets/images/resimyok.jpg"}
                           alt={item.product.title}
                           width={"90px"}
                         />

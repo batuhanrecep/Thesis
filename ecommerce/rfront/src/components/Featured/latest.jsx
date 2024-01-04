@@ -24,7 +24,7 @@ function Latest() {
             <div key={product.id} className="product-card">
               <Link to={`/product/${product.id}#${product.slug}`}>
                 <img
-                  src={product.image}
+                  src={product.image || 'src/assets/images/resimyok.jpg'}
                   alt={product.title}
                   className="product-image"
                 />

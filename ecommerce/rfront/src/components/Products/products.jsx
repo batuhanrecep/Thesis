@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
-import './products.css'
+import './products.css';
 
 const Products = ({ onProductAddedToCart }) => {
   const [products, setProducts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addedProductTitle, setAddedProductTitle] = useState("");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/products/")
@@ -13,7 +15,7 @@ const Products = ({ onProductAddedToCart }) => {
       .catch((error) => console.error("API Hatası:", error));
   }, []);
 
-  const addToCart = async (productId) => {
+  const addToCart = async (productId, productTitle) => {
     try {
       const response = await fetch('http://127.0.0.1:8000/api/basket/items/', {
         method: 'POST',
@@ -33,11 +35,33 @@ const Products = ({ onProductAddedToCart }) => {
 
       console.log(`Ürün ID ${productId} sepete eklendi.`);
 
+      setIsModalOpen(true);
+      setAddedProductTitle(productTitle);
       onProductAddedToCart();
 
     } catch (error) {
       console.error('API Hatası:', error);
     }
+  };
+
+  useEffect(() => {
+    let timeoutId;
+
+    if (isModalOpen) {
+      timeoutId = setTimeout(() => {
+        setIsModalOpen(false);
+        setAddedProductTitle("");
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isModalOpen]);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setAddedProductTitle("");
   };
 
   return (
@@ -50,7 +74,7 @@ const Products = ({ onProductAddedToCart }) => {
                 <Link to={`/product/${product.id}#${product.slug}`}>
                   <img
                     className="card-img-top"
-                    src={product.image || "src/assets/images/resimyok.jpg"}
+                    src={product.images[0]?.image ?? "../src/assets/images/resimyok.jpg"}
                     alt={product.title}
                     style={{
                       width: "100%",
@@ -69,7 +93,7 @@ const Products = ({ onProductAddedToCart }) => {
                       </Link>
                     </h5>
                     <span style={{ color: "green", fontWeight: "bold" }}>
-                      {product.discount_percentage == 0 ? `` : `%${product.discount_percentage} ↓`}
+                      {product.discount_percentage === 0 ? `` : `%${product.discount_percentage} ↓`}
                     </span>
                     <h4 style={{ color: "green", fontWeight: "bold" }}>
                       {Math.floor(product.regular_price)}<span className="h6 fw-bold">{(product.regular_price % 1).toFixed(2).slice(1)}</span> TL
@@ -83,10 +107,7 @@ const Products = ({ onProductAddedToCart }) => {
                   <div className="text-center">
                     <button
                       className="btn btn-outline-light mt-auto"
-                      onClick={() => {
-                        addToCart(product.id);
-                        onProductAddedToCart();
-                      }}
+                      onClick={() => addToCart(product.id, product.title)}
                     >
                       Sepete Ekle
                     </button>
@@ -97,6 +118,12 @@ const Products = ({ onProductAddedToCart }) => {
           ))}
         </div>
       </div>
+      {isModalOpen && (
+        <div className="sepet-modal">
+          <span className="close" onClick={closeModal}>&times;</span>
+          <p><b>{addedProductTitle}</b> sepetinize eklenmiştir.</p>
+        </div>
+      )}
     </section>
   );
 };

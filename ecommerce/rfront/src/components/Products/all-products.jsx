@@ -7,6 +7,8 @@ function AllProducts() {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [addedProductTitle, setAddedProductTitle] = useState("");
 
     useEffect(() => {
         fetchProducts();
@@ -43,6 +45,45 @@ function AllProducts() {
         }
 
         setFilteredProducts(filtered);
+    };
+
+    const addToCart = async (productId, productTitle) => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/basket/items/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('API Hatası');
+            }
+
+            console.log(`Ürün ID ${productId} sepete eklendi.`);
+
+            setIsModalOpen(true);
+            setAddedProductTitle(productTitle);
+
+            // Modal'ı 5 saniye sonra kapat
+            setTimeout(() => {
+                setIsModalOpen(false);
+                setAddedProductTitle(""); // Eklenen ürün bilgisini temizle
+            }, 5000);
+
+        } catch (error) {
+            console.error('API Hatası:', error);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setAddedProductTitle(""); // Eklenen ürün bilgisini temizle
     };
 
     return (
@@ -88,7 +129,7 @@ function AllProducts() {
                                         <Link to={`/product/${product.id}#${product.slug}`}>
                                             <img
                                                 className="card-img-top"
-                                                src={product.image || 'src/assets/images/resimyok.jpg'}
+                                                src={product.images[0]?.image ?? "../src/assets/images/resimyok.jpg"}
                                                 alt={product.title}
                                                 style={{ width: '268px', height: '185px' }}
                                             />
@@ -100,12 +141,19 @@ function AllProducts() {
                                                         {product.title.length > 25 ? `${product.title.slice(0, 25)}..` : product.title} 
                                                     </Link>
                                                 </h5>
-                                                {`$${product.regular_price} - $${product.discount_price}`}
+                                                {`${product.regular_price} TL`}
                                             </div>
                                             {product.description.length > 75 ? `${product.description.slice(0, 75)}..` : product.description}
                                         </div>
                                         <div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                            <div className="text-center"><a className="btn btn-outline-dark mt-auto" href="#">Sepete Ekle</a></div>
+                                            <div className="text-center">
+                                                <button
+                                                    className="btn btn-outline-dark mt-auto"
+                                                    onClick={() => addToCart(product.id, product.title)}
+                                                >
+                                                    Sepete Ekle
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -114,6 +162,12 @@ function AllProducts() {
                     </div>
                 </div>
             </div>
+            {isModalOpen && (
+                <div className="sepet-modal">
+                    <span className="close" onClick={closeModal}>&times;</span>
+                    <p><b>{addedProductTitle}</b> sepetinize eklenmiştir.</p>
+                </div>
+            )}
         </section>
     );
 }

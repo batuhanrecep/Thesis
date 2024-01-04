@@ -97,3 +97,12 @@
     left: 50%;
     transform: translate(-50%, -5px);
 }
+
+.bg-mor {
+  background-color: #8A2BE2;
+  color: white;
+}
+
+.paymentcard {
+  height: 450px;
+}
